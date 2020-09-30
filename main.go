@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/ticklepoke/CZ4031/blockmanager"
+
 	"github.com/ticklepoke/CZ4031/bptree"
 )
 
@@ -23,13 +25,11 @@ func main() {
 		}
 	}
 
-	t.PrintTree()
+	// t.PrintTree()
 
-	r, err := t.Find(7, true)
-	if err != nil {
-		fmt.Printf("error: %s\n\n", err)
-	}
-
-	fmt.Printf("%s\n\n", r.Value)
-
+	// testing the insert function
+	b := blockmanager.InitializeBlockManager(100)
+	b.InsertRecord("tt0848228", "7.7", "9987")
+	b.InsertRecord("tt0848224", "7.2", "99890")
+	b.DisplayStatus()
 }
