@@ -4,11 +4,11 @@ package blockmanager
 // insert Record to current block
 func (b *BlockManager) InsertRecord(tconst string, avgRating string, numVotes string) *[]byte {
 	newRecord := makeRecord(tconst, avgRating, numVotes)
-	del := b.markedDeleted
+	del := (b.markedDeleted)
 	var addr *[]byte
 
 	if len(del) > 0 {
-		addr, del = del[len(del)-1], del[:len(del)-1]
+		addr, b.markedDeleted = del[len(del)-1], del[:len(del)-1]
 		copy(*addr, newRecord)
 	} else {
 		addr = b.insertToBlock(newRecord)
