@@ -7,6 +7,11 @@ const (
 	// avgRating:	9.9		   - 3
 	// numVotes		2279223    - 7
 	RECORDSIZE = 20
+
+	// RATINGOFFSET - byte slice index for ratings
+	RATINGOFFSET = 10
+	// VOTESOFFSET - byte slice indes for votes
+	VOTESOFFSET = 13
 )
 
 // BlockManager - handles the logic for the creation and
