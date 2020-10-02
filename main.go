@@ -31,14 +31,16 @@ func main() {
 
 	// record deletion
 	b.InsertRecord("tt0848228", "7.7", "9987")
-	rec := b.InsertRecord("tt0848224", "7.2", "99890")
+	recAddr := b.InsertRecord("tt0848224", "7.2", "99890")
 	b.DisplayStatus(false)
 
-	b.DeleteRecord(rec)
-	b.DisplayStatus(false)
+	blockmanager.PrintRecord(recAddr)
 
-	b.InsertRecord("tt081", "9", "98")
-	b.DisplayStatus(false)
+	// b.DeleteRecord(recAddr)
+	// b.DisplayStatus(false)
+
+	// b.InsertRecord("tt081", "9", "98")
+	// b.DisplayStatus(false)
 
 	// multiple blocks
 	// for i := 0; i < 101; i++ {
