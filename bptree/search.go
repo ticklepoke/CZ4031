@@ -27,6 +27,9 @@ func (t *Tree) Find(key int, verbose bool) (*Record, error) {
 	return r, nil
 }
 
+/**
+* TODO: Modify this to return a range of records that return the same key
+*/
 func (t *Tree) FindAndPrint(key int, verbose bool) {
 	r, err := t.Find(key, verbose)
 
@@ -37,6 +40,9 @@ func (t *Tree) FindAndPrint(key int, verbose bool) {
 	}
 }
 
+/**
+* TODO: Modify to return a range of records in the range
+*/
 func (t *Tree) FindAndPrintRange(key_start, key_end int, verbose bool) {
 	var i int
 	array_size := key_end - key_start + 1
