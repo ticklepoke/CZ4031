@@ -5,7 +5,8 @@ import (
 	"fmt"
 )
 
-// search right hand side for linked list
+// Find returns record, error
+// TODO: search right hand side for linked list
 func (t *Tree) Find(key int, verbose bool) (*Record, error) {
 	i := 0
 	c := t.findLeaf(key, verbose)
@@ -27,9 +28,8 @@ func (t *Tree) Find(key int, verbose bool) (*Record, error) {
 	return r, nil
 }
 
-/**
-* TODO: Modify this to return a range of records that return the same key
-*/
+// FindAndPrint returns void
+// TODO: Modify this to return a range of records that return the same key
 func (t *Tree) FindAndPrint(key int, verbose bool) {
 	r, err := t.Find(key, verbose)
 
@@ -40,52 +40,52 @@ func (t *Tree) FindAndPrint(key int, verbose bool) {
 	}
 }
 
-/**
-* TODO: Modify to return a range of records in the range
-*/
-func (t *Tree) FindAndPrintRange(key_start, key_end int, verbose bool) {
+// FindAndPrintRange returns void
+func (t *Tree) FindAndPrintRange(keyStart, keyEnd int, verbose bool) {
 	var i int
-	array_size := key_end - key_start + 1
-	returned_keys := make([]int, array_size)
-	returned_pointers := make([]interface{}, array_size)
-	num_found := t.findRange(key_start, key_end, verbose, returned_keys, returned_pointers)
-	if num_found == 0 {
-		fmt.Println("None found,\n")
+	arraySize := keyEnd - keyStart + 1
+	returnedKeys := make([]int, arraySize)
+	returnedPointers := make([]interface{}, arraySize)
+	numFound := t.findRange(keyStart, keyEnd, verbose, returnedKeys, returnedPointers)
+	if numFound == 0 {
+		fmt.Println("none found")
 	} else {
-		for i = 0; i < num_found; i++ {
-			c, _ := returned_pointers[i].(*Record)
+		for i = 0; i < numFound; i++ {
+			c, _ := returnedPointers[i].(*Record)
 			fmt.Printf("Key: %d  Location: %d  Value: %s\n",
-				returned_keys[i],
-				returned_pointers[i],
+				returnedKeys[i],
+				returnedPointers[i],
 				c.Value)
 		}
 	}
 }
 
-// implement search rhs at leaf nodes (for the duplicate keys)
-func (t *Tree) findRange(key_start, key_end int, verbose bool, returned_keys []int, returned_pointers []interface{}) int {
-	var i int
-	num_found := 0
+/* ============================ Private Methods ============================*/
 
-	n := t.findLeaf(key_start, verbose)
+// implement search rhs at leaf nodes (for the duplicate keys)
+func (t *Tree) findRange(keyStart, keyEnd int, verbose bool, returnedKeys []int, returnedPointers []interface{}) int {
+	var i int
+	numFound := 0
+
+	n := t.findLeaf(keyStart, verbose)
 	if n == nil {
 		return 0
 	}
-	for i = 0; i < n.NumKeys && n.Keys[i] < key_start; i++ {
+	for i = 0; i < n.NumKeys && n.Keys[i] < keyStart; i++ {
 		if i == n.NumKeys { // could be wrong
 			return 0
 		}
 	}
 	for n != nil {
-		for i = i; i < n.NumKeys && n.Keys[i] <= key_end; i++ {
-			returned_keys[num_found] = n.Keys[i]
-			returned_pointers[num_found] = n.Pointers[i]
-			num_found += 1
+		for i = i; i < n.NumKeys && n.Keys[i] <= keyEnd; i++ {
+			returnedKeys[numFound] = n.Keys[i]
+			returnedPointers[numFound] = n.Pointers[i]
+			numFound++
 		}
 		n, _ = n.Pointers[order-1].(*Node)
 		i = 0
 	}
-	return num_found
+	return numFound
 }
 
 func (t *Tree) findLeaf(key int, verbose bool) *Node {
@@ -108,7 +108,7 @@ func (t *Tree) findLeaf(key int, verbose bool) *Node {
 		i = 0
 		for i < c.NumKeys {
 			if key >= c.Keys[i] {
-				i += 1
+				i++
 			} else {
 				break
 			}

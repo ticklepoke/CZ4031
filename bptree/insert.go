@@ -16,28 +16,30 @@ func (t *Tree) Insert(key int, value []byte) error {
 		// TODO: add logic for traversal if key already exists
 		fmt.Printf("key exists!")
 		return errors.New("key already exists")
-	} else {
-		// Inserting a new key
-		pointer, err := makeRecord(value)
-		if err != nil {
-			return err
-		}
+	} 
 
-		if t.Root == nil {
-			return t.startNewTree(key, pointer)
-		}
+	// Inserting a new key
+	pointer, err := makeRecord(value)
+	if err != nil {
+		return err
+	}
 
-		leaf = t.findLeaf(key, false)
+	if t.Root == nil {
+		return t.startNewTree(key, pointer)
+	}
 
-		if leaf.NumKeys < order-1 {
-			insertIntoLeaf(leaf, key, pointer)
-			return nil
-		}
+	leaf = t.findLeaf(key, false)
+
+	if leaf.NumKeys < order-1 {
+		insertIntoLeaf(leaf, key, pointer)
+		return nil
 	}
 
 
 	return t.insertIntoLeafAfterSplitting(leaf, key, pointer)
 }
+
+/* ============================ Private Methods ============================*/
 
 // implement binsearch
 func getLeftIndex(parent, left *Node) int {
