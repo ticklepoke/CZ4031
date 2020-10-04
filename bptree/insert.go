@@ -10,6 +10,8 @@ func (t *Tree) Insert(key int, value []byte) error {
 
 	// edit
 	if _, err := t.Find(key, false); err == nil {
+		// if next block is not null, traverse and find a new position
+		// else create a new block
 		return errors.New("key already exists")
 	}
 
