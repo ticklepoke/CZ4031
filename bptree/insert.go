@@ -1,6 +1,9 @@
 package bptree
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 // Insert - implement duplicate key insertion functionality
 // create new node w/o parent pointer (point to the left)
@@ -10,223 +13,225 @@ func (t *Tree) Insert(key int, value []byte) error {
 
 	// edit
 	if _, err := t.Find(key, false); err == nil {
-		// if next block is not null, traverse and find a new position
-		// else create a new block
+		// TODO: add logic for traversal if key already exists
+		fmt.Printf("key exists!")
 		return errors.New("key already exists")
+	} else {
+		// Inserting a new key
+		pointer, err := makeRecord(value)
+		if err != nil {
+			return err
+		}
+
+		if t.Root == nil {
+			return t.startNewTree(key, pointer)
+		}
+
+		leaf = t.findLeaf(key, false)
+
+		if leaf.NumKeys < order-1 {
+			insertIntoLeaf(leaf, key, pointer)
+			return nil
+		}
 	}
 
-	pointer, err := makeRecord(value)
-	if err != nil {
-		return err
-	}
-
-	if t.Root == nil {
-		return t.startNewTree(key, pointer)
-	}
-
-	leaf = t.findLeaf(key, false)
-
-	if leaf.NumKeys < order-1 {
-		insertIntoLeaf(leaf, key, pointer)
-		return nil
-	}
 
 	return t.insertIntoLeafAfterSplitting(leaf, key, pointer)
 }
 
 // implement binsearch
 func getLeftIndex(parent, left *Node) int {
-	left_index := 0
-	for left_index <= parent.NumKeys && parent.Pointers[left_index] != left {
-		left_index += 1
+	leftIndex := 0
+	for leftIndex <= parent.NumKeys && parent.Pointers[leftIndex] != left {
+		leftIndex++
 	}
-	return left_index
+	return leftIndex
 }
 
 // implement binsearch
 func insertIntoLeaf(leaf *Node, key int, pointer *Record) {
-	var i, insertion_point int
+	var i, insertionPoint int
 
-	for insertion_point < leaf.NumKeys && leaf.Keys[insertion_point] < key {
-		insertion_point += 1
+	for insertionPoint < leaf.NumKeys && leaf.Keys[insertionPoint] < key {
+		insertionPoint++
 	}
 
-	for i = leaf.NumKeys; i > insertion_point; i-- {
+	for i = leaf.NumKeys; i > insertionPoint; i-- {
 		leaf.Keys[i] = leaf.Keys[i-1]
 		leaf.Pointers[i] = leaf.Pointers[i-1]
 	}
-	leaf.Keys[insertion_point] = key
-	leaf.Pointers[insertion_point] = pointer
-	leaf.NumKeys += 1
+	leaf.Keys[insertionPoint] = key
+	leaf.Pointers[insertionPoint] = pointer
+	leaf.NumKeys++
 	return
 }
 
 // implement binsearch
 func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record) error {
-	var new_leaf *Node
-	var insertion_index, split, new_key, i, j int
+	var newLeaf *Node
+	var insertionIndex, split, newKey, i, j int
 	var err error
 
-	new_leaf, err = makeLeaf()
+	newLeaf, err = makeLeaf()
 	if err != nil {
 		return nil
 	}
 
-	temp_keys := make([]int, order)
-	if temp_keys == nil {
-		return errors.New("Error: Temporary keys array.")
+	tempKeys := make([]int, order)
+	if tempKeys == nil {
+		return errors.New("error: Temporary keys array")
 	}
 
-	temp_pointers := make([]interface{}, order)
-	if temp_pointers == nil {
-		return errors.New("Error: Temporary pointers array.")
+	tempPointers := make([]interface{}, order)
+	if tempPointers == nil {
+		return errors.New("error: Temporary pointers array")
 	}
 
-	for insertion_index < order-1 && leaf.Keys[insertion_index] < key {
-		insertion_index += 1
+	for insertionIndex < order-1 && leaf.Keys[insertionIndex] < key {
+		insertionIndex++
 	}
 
 	for i = 0; i < leaf.NumKeys; i++ {
-		if j == insertion_index {
-			j += 1
+		if j == insertionIndex {
+			j++
 		}
-		temp_keys[j] = leaf.Keys[i]
-		temp_pointers[j] = leaf.Pointers[i]
-		j += 1
+		tempKeys[j] = leaf.Keys[i]
+		tempPointers[j] = leaf.Pointers[i]
+		j++
 	}
 
-	temp_keys[insertion_index] = key
-	temp_pointers[insertion_index] = pointer
+	tempKeys[insertionIndex] = key
+	tempPointers[insertionIndex] = pointer
 
 	leaf.NumKeys = 0
 
 	split = cut(order - 1)
 
 	for i = 0; i < split; i++ {
-		leaf.Pointers[i] = temp_pointers[i]
-		leaf.Keys[i] = temp_keys[i]
-		leaf.NumKeys += 1
+		leaf.Pointers[i] = tempPointers[i]
+		leaf.Keys[i] = tempKeys[i]
+		leaf.NumKeys++
 	}
 
 	j = 0
 	for i = split; i < order; i++ {
-		new_leaf.Pointers[j] = temp_pointers[i]
-		new_leaf.Keys[j] = temp_keys[i]
-		new_leaf.NumKeys += 1
-		j += 1
+		newLeaf.Pointers[j] = tempPointers[i]
+		newLeaf.Keys[j] = tempKeys[i]
+		newLeaf.NumKeys++
+		j++
 	}
 
-	new_leaf.Pointers[order-1] = leaf.Pointers[order-1]
-	leaf.Pointers[order-1] = new_leaf
+	newLeaf.Pointers[order-1] = leaf.Pointers[order-1]
+	leaf.Pointers[order-1] = newLeaf
 
 	for i = leaf.NumKeys; i < order-1; i++ {
 		leaf.Pointers[i] = nil
 	}
-	for i = new_leaf.NumKeys; i < order-1; i++ {
-		new_leaf.Pointers[i] = nil
+	for i = newLeaf.NumKeys; i < order-1; i++ {
+		newLeaf.Pointers[i] = nil
 	}
 
 	// point to the left for dup keys
-	new_leaf.Parent = leaf.Parent
-	new_key = new_leaf.Keys[0]
+	newLeaf.Parent = leaf.Parent
+	newKey = newLeaf.Keys[0]
 
-	return t.insertIntoParent(leaf, new_key, new_leaf)
+	return t.insertIntoParent(leaf, newKey, newLeaf)
 }
 
-func insertIntoNode(n *Node, left_index, key int, right *Node) {
+func insertIntoNode(n *Node, leftIndex, key int, right *Node) {
 	var i int
-	for i = n.NumKeys; i > left_index; i-- {
+	for i = n.NumKeys; i > leftIndex; i-- {
 		n.Pointers[i+1] = n.Pointers[i]
 		n.Keys[i] = n.Keys[i-1]
 	}
-	n.Pointers[left_index+1] = right
-	n.Keys[left_index] = key
-	n.NumKeys += 1
+	n.Pointers[leftIndex+1] = right
+	n.Keys[leftIndex] = key
+	n.NumKeys++
 }
 
 // implement binsearch
-func (t *Tree) insertIntoNodeAfterSplitting(old_node *Node, left_index, key int, right *Node) error {
-	var i, j, split, k_prime int
-	var new_node, child *Node
-	var temp_keys []int
-	var temp_pointers []interface{}
+func (t *Tree) insertIntoNodeAfterSplitting(oldNode *Node, leftIndex, key int, right *Node) error {
+	var i, j, split, kPrime int
+	var newNode, child *Node
+	var tempKeys []int
+	var tempPointers []interface{}
 	var err error
 
-	temp_pointers = make([]interface{}, order+1)
-	if temp_pointers == nil {
-		return errors.New("Error: Temporary pointers array for splitting nodes.")
+	tempPointers = make([]interface{}, order+1)
+	if tempPointers == nil {
+		return errors.New("error: Temporary pointers array for splitting nodes")
 	}
 
-	temp_keys = make([]int, order)
-	if temp_keys == nil {
-		return errors.New("Error: Temporary keys array for splitting nodes.")
+	tempKeys = make([]int, order)
+	if tempKeys == nil {
+		return errors.New("error: Temporary keys array for splitting nodes")
 	}
 
-	for i = 0; i < old_node.NumKeys+1; i++ {
-		if j == left_index+1 {
-			j += 1
+	for i = 0; i < oldNode.NumKeys+1; i++ {
+		if j == leftIndex+1 {
+			j++
 		}
-		temp_pointers[j] = old_node.Pointers[i]
-		j += 1
+		tempPointers[j] = oldNode.Pointers[i]
+		j++
 	}
 
 	j = 0
-	for i = 0; i < old_node.NumKeys; i++ {
-		if j == left_index {
-			j += 1
+	for i = 0; i < oldNode.NumKeys; i++ {
+		if j == leftIndex {
+			j++
 		}
-		temp_keys[j] = old_node.Keys[i]
-		j += 1
+		tempKeys[j] = oldNode.Keys[i]
+		j++
 	}
 
-	temp_pointers[left_index+1] = right
-	temp_keys[left_index] = key
+	tempPointers[leftIndex+1] = right
+	tempKeys[leftIndex] = key
 
 	split = cut(order)
-	new_node, err = makeNode()
+	newNode, err = makeNode()
 	if err != nil {
 		return err
 	}
-	old_node.NumKeys = 0
+	oldNode.NumKeys = 0
 	for i = 0; i < split-1; i++ {
-		old_node.Pointers[i] = temp_pointers[i]
-		old_node.Keys[i] = temp_keys[i]
-		old_node.NumKeys += 1
+		oldNode.Pointers[i] = tempPointers[i]
+		oldNode.Keys[i] = tempKeys[i]
+		oldNode.NumKeys++
 	}
-	old_node.Pointers[i] = temp_pointers[i]
-	k_prime = temp_keys[split-1]
+	oldNode.Pointers[i] = tempPointers[i]
+	kPrime = tempKeys[split-1]
 	j = 0
 	for i += 1; i < order; i++ {
-		new_node.Pointers[j] = temp_pointers[i]
-		new_node.Keys[j] = temp_keys[i]
-		new_node.NumKeys += 1
-		j += 1
+		newNode.Pointers[j] = tempPointers[i]
+		newNode.Keys[j] = tempKeys[i]
+		newNode.NumKeys++
+		j++
 	}
-	new_node.Pointers[j] = temp_pointers[i]
-	new_node.Parent = old_node.Parent
-	for i = 0; i <= new_node.NumKeys; i++ {
-		child, _ = new_node.Pointers[i].(*Node)
-		child.Parent = new_node
+	newNode.Pointers[j] = tempPointers[i]
+	newNode.Parent = oldNode.Parent
+	for i = 0; i <= newNode.NumKeys; i++ {
+		child, _ = newNode.Pointers[i].(*Node)
+		child.Parent = newNode
 	}
 
-	return t.insertIntoParent(old_node, k_prime, new_node)
+	return t.insertIntoParent(oldNode, kPrime, newNode)
 }
 
 func (t *Tree) insertIntoParent(left *Node, key int, right *Node) error {
-	var left_index int
+	var leftIndex int
 	parent := left.Parent
 
 	if parent == nil {
 		return t.insertIntoNewRoot(left, key, right)
 	}
-	left_index = getLeftIndex(parent, left)
+	leftIndex = getLeftIndex(parent, left)
 
 	if parent.NumKeys < order-1 {
-		insertIntoNode(parent, left_index, key, right)
+		insertIntoNode(parent, leftIndex, key, right)
 		return nil
 	}
 
-	return t.insertIntoNodeAfterSplitting(parent, left_index, key, right)
+	return t.insertIntoNodeAfterSplitting(parent, leftIndex, key, right)
 }
 
 func (t *Tree) insertIntoNewRoot(left *Node, key int, right *Node) error {
@@ -237,7 +242,7 @@ func (t *Tree) insertIntoNewRoot(left *Node, key int, right *Node) error {
 	t.Root.Keys[0] = key
 	t.Root.Pointers[0] = left
 	t.Root.Pointers[1] = right
-	t.Root.NumKeys += 1
+	t.Root.NumKeys++
 	t.Root.Parent = nil
 	left.Parent = t.Root
 	right.Parent = t.Root
