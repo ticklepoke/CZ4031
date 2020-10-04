@@ -18,6 +18,7 @@ func (t *Tree) Find(key int, verbose bool) (*Record, error) {
 		}
 	}
 	if i == c.NumKeys {
+		// TODO: traverse to next block to find key?
 		return nil, errors.New("key not found")
 	}
 
