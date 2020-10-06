@@ -8,7 +8,7 @@ func (t *Tree) Delete(key int) error {
 	if err != nil {
 		return err
 	}
-	key_leaf := t.findLeaf(key, false)
+	key_leaf := t.findLeaf(key, false) // TODO: this becomes a slice of leaf nodes
 	if key_record != nil && key_leaf != nil {
 		t.deleteEntry(key_leaf, key, key_record)
 	}

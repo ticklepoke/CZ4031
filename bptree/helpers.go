@@ -23,6 +23,7 @@ func (t *Tree) PrintTree() {
 				new_rank = t.pathToRoot(n)
 				if new_rank != rank {
 					fmt.Printf("\n")
+					rank = new_rank
 				}
 			}
 			if verbose_output {

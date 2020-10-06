@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/ticklepoke/CZ4031/blockmanager"
+
 	"github.com/ticklepoke/CZ4031/bptree"
 )
 
@@ -23,13 +25,27 @@ func main() {
 		}
 	}
 
-	t.PrintTree()
+	// t.PrintTree()
+	t.Find(1)
 
-	r, err := t.Find(7, true)
-	if err != nil {
-		fmt.Printf("error: %s\n\n", err)
-	}
+	b := blockmanager.InitializeBlockManager(100)
 
-	fmt.Printf("%s\n\n", r.Value)
+	// record deletion
+	// b.InsertRecord("tt0848228", "7.7", "9987")
+	// recAddr := b.InsertRecord("tt0848224", "7.2", "99890")
+	// b.DisplayStatus(false)
 
+	// blockmanager.PrintRecord(recAddr)
+
+	// b.DeleteRecord(recAddr)
+	// b.DisplayStatus(false)
+
+	// b.InsertRecord("tt081", "9", "98")
+	// b.DisplayStatus(false)
+
+	// multiple blocks
+	// for i := 0; i < 101; i++ {
+	// 	b.InsertRecord("tt"+strconv.Itoa(i), "7.7", strconv.Itoa(i))
+	// }
+	// b.DisplayStatus(true)
 }
