@@ -59,14 +59,9 @@ func (t *Tree) PrintTree() {
 	fmt.Printf("\n")
 }
 
-// PrintOrder prints the height of the tree
+// PrintHeight prints the height of the tree
 func (t *Tree) PrintHeight() {
 	fmt.Printf("Height: %v", strconv.Itoa(t.Height()))
-}
-
-// PrintOrder prints the n of the tree
-func (t *Tree) PrintOrder() {
-	fmt.Printf("Order: %v", strconv.Itoa(order))
 }
 
 // PrintLeaves print leaves

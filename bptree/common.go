@@ -5,17 +5,14 @@ import "errors"
 var (
 	err error
 
-	// defaultOrder = 4
-	// minOrder     = 3
-	// maxOrder     = 20
-
-	// order          = defaultOrder
+	// N is the maximum number of keys in a node
 	N              = 4
 	queue          *Node
 	verbose_output = false
 	version        = 0.1
 )
 
+// Tree is a B+ Tree
 type Tree struct {
 	Root *Node
 }
@@ -30,6 +27,7 @@ type Record struct {
 // keep track of blocks with free space
 // delete record
 
+// Node represents a B+ tree node
 type Node struct {
 	Pointers []interface{}
 	Keys     []int
@@ -40,41 +38,41 @@ type Node struct {
 }
 
 // NewTree Constructor with Order
-func NewTree(treeOrder int) *Tree {
-	order = treeOrder
+func NewTree(n int) *Tree {
+	N = n
 	return &Tree{}
 }
 
 // call block manager
 // allocate space to the record
 func makeRecord(value []byte) (*Record, error) {
-	new_record := new(Record)
-	if new_record == nil {
-		return nil, errors.New("Error: Record creation.")
+	newRecord := new(Record)
+	if newRecord == nil {
+		return nil, errors.New("Error: Record creation")
 	} else {
-		new_record.Value = value
+		newRecord.Value = value
 	}
-	return new_record, nil
+	return newRecord, nil
 }
 
 func makeNode() (*Node, error) {
-	new_node := new(Node)
-	if new_node == nil {
-		return nil, errors.New("Error: Node creation.")
+	newNode := new(Node)
+	if newNode == nil {
+		return nil, errors.New("Error: Node creation")
 	}
-	new_node.Keys = make([]int, N-1)
-	if new_node.Keys == nil {
-		return nil, errors.New("Error: New node keys array.")
+	newNode.Keys = make([]int, N-1)
+	if newNode.Keys == nil {
+		return nil, errors.New("Error: New node keys array")
 	}
-	new_node.Pointers = make([]interface{}, N)
-	if new_node.Keys == nil {
-		return nil, errors.New("Error: New node pointers array.")
+	newNode.Pointers = make([]interface{}, N)
+	if newNode.Keys == nil {
+		return nil, errors.New("Error: New node pointers array")
 	}
-	new_node.IsLeaf = false
-	new_node.NumKeys = 0
-	new_node.Parent = nil
-	new_node.Next = nil
-	return new_node, nil
+	newNode.IsLeaf = false
+	newNode.NumKeys = 0
+	newNode.Parent = nil
+	newNode.Next = nil
+	return newNode, nil
 }
 
 func makeLeaf() (*Node, error) {
