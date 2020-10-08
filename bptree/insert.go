@@ -28,6 +28,7 @@ func (t *Tree) Insert(key int, value []byte) error {
 		return nil
 	}
 
+	// split the leaf node if it is already full
 	return t.insertIntoLeafAfterSplitting(leaf, key, pointer)
 }
 
@@ -108,6 +109,7 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record
 
 	// copy the array and insert at insertion point
 	for i = 0; i < leaf.NumKeys; i++ {
+		// skips the space of the insertion index
 		if j == insertionIndex {
 			j++
 		}
@@ -123,6 +125,7 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record
 
 	split = findMidPoint(N - 1)
 
+	// could just make use of copy to do this
 	for i = 0; i < split; i++ {
 		leaf.Pointers[i] = tempPointers[i]
 		leaf.Keys[i] = tempKeys[i]
@@ -142,6 +145,7 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record
 	newLeaf.Next = leaf.Next
 	leaf.Next = newLeaf.Next
 
+  // set the indices after insertion point to nil
 	for i = leaf.NumKeys; i < N-1; i++ {
 		leaf.Pointers[i] = nil
 	}
@@ -149,6 +153,8 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record
 		newLeaf.Pointers[i] = nil
 	}
 
+	// point to the left for dup keys
+	// CHECK this might be wrong
 	newLeaf.Parent = leaf.Parent
 	newKey = newLeaf.Keys[0]
 
@@ -202,6 +208,7 @@ func (t *Tree) insertIntoNodeAfterSplitting(oldNode *Node, leftIndex, key int, r
 	}
 
 	tempPointers[leftIndex+1] = right
+
 	tempKeys[leftIndex] = key
 
 	split = findMidPoint(N)
@@ -210,13 +217,15 @@ func (t *Tree) insertIntoNodeAfterSplitting(oldNode *Node, leftIndex, key int, r
 		return err
 	}
 	oldNode.NumKeys = 0
-	for i = 0; i < split-1; i++ {
+	for i = 0; i < split; i++ {
 		oldNode.Pointers[i] = tempPointers[i]
 		oldNode.Keys[i] = tempKeys[i]
 		oldNode.NumKeys++
 	}
 	oldNode.Pointers[i] = tempPointers[i]
-	kPrime = tempKeys[split-1]
+
+	kPrime = tempKeys[split]
+
 	j = 0
 	// for i += 1; i < N; i++ {
 	for i += 1; i < N; i++ {
@@ -225,6 +234,7 @@ func (t *Tree) insertIntoNodeAfterSplitting(oldNode *Node, leftIndex, key int, r
 		newNode.NumKeys++
 		j++
 	}
+
 	newNode.Pointers[j] = tempPointers[i]
 	newNode.Parent = oldNode.Parent
 	for i = 0; i <= newNode.NumKeys; i++ {
@@ -232,6 +242,12 @@ func (t *Tree) insertIntoNodeAfterSplitting(oldNode *Node, leftIndex, key int, r
 		child.Parent = newNode
 	}
 
+	for i = 0; i <= oldNode.NumKeys; i++ {
+		child, _ = oldNode.Pointers[i].(*Node)
+		fmt.Println(child.Keys)
+	}
+
+	// adjust parent pointer of the two nodes
 	return t.insertIntoParent(oldNode, kPrime, newNode)
 }
 
@@ -242,7 +258,10 @@ func (t *Tree) insertIntoParent(left *Node, key int, right *Node) error {
 	if parent == nil {
 		return t.insertIntoNewRoot(left, key, right)
 	}
+
 	leftIndex = getLeftIndex(parent, left)
+
+	// if there is space, insert directly
 
 	if parent.NumKeys < N-1 {
 		insertIntoNode(parent, leftIndex, key, right)
