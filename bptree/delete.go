@@ -1,16 +1,19 @@
 package bptree
 
-import "reflect"
+import (
+	"reflect"
+)
 
 // Delete - implement deletion logic for node w/o parent pointers
 func (t *Tree) Delete(key int) error {
-	key_record, err := t.Find(key, false)
+	keyRecords, err := t.Find(key, false)
 	if err != nil {
 		return err
 	}
-	key_leaf := t.findLeaf(key, false) // TODO: this becomes a slice of leaf nodes
-	if key_record != nil && key_leaf != nil {
-		t.deleteEntry(key_leaf, key, key_record)
+	keyLeaf := t.findLeaf(key, false) // TODO: this becomes a slice of leaf nodes
+	if len(keyRecords) != 0 && keyLeaf != nil {
+		keyRecordHead := keyRecords[0]
+		t.deleteEntry(keyLeaf, key, keyRecordHead)
 	}
 	return nil
 }
