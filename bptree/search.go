@@ -5,9 +5,8 @@ import (
 	"fmt"
 )
 
-// Find returns slice of records, error
-// TODO: search right hand side for linked list
-func (t *Tree) Find(key int, verbose bool) (*Record, error) {
+// Find the records for a given key
+func (t *Tree) Find(key int, verbose bool) ([]*Record, error) {
 	i := 0
 	c := t.findLeaf(key, verbose)
 	if c == nil {
@@ -24,9 +23,9 @@ func (t *Tree) Find(key int, verbose bool) (*Record, error) {
 		return nil, errors.New("key not found")
 	}
 
-	r, _ := c.Pointers[i].(*Record)
-
-	return r, nil
+	curr := c.Pointers[i].(*Record)
+	var recordsArr []*Record = iterLeafLL(curr)
+	return recordsArr, nil
 }
 
 // FindAndPrint returns void
@@ -37,7 +36,9 @@ func (t *Tree) FindAndPrint(key int, verbose bool) {
 	if err != nil || r == nil {
 		fmt.Printf("Record not found under key %d.\n", key)
 	} else {
-		fmt.Printf("Record at %d -- key %d, value %s.\n", r, key, r.Value)
+		for _, recordPtr := range r {
+			fmt.Printf("Record at %p -- key %d, value %s.\n", recordPtr, key, recordPtr.Value)
+		}
 	}
 }
 
@@ -46,7 +47,7 @@ func (t *Tree) FindAndPrintRange(keyStart, keyEnd int, verbose bool) {
 	var i int
 	arraySize := keyEnd - keyStart + 1
 	returnedKeys := make([]int, arraySize)
-	returnedPointers := make([]interface{}, arraySize)
+	returnedPointers := make([]interface{}, 0)
 	numFound := t.findRange(keyStart, keyEnd, verbose, returnedKeys, returnedPointers)
 	if numFound == 0 {
 		fmt.Println("none found")
@@ -63,12 +64,11 @@ func (t *Tree) FindAndPrintRange(keyStart, keyEnd int, verbose bool) {
 
 /* ============================ Private Methods ============================*/
 
-// implement search rhs at leaf nodes (for the duplicate keys)
 func (t *Tree) findRange(keyStart, keyEnd int, verbose bool, returnedKeys []int, returnedPointers []interface{}) int {
 	var i int
 	numFound := 0
 
-	n := t.findLeaf(keyStart, verbose) // TODO: n is now an array of nodes, need to refactor to handle this
+	n := t.findLeaf(keyStart, verbose)
 	if n == nil {
 		return 0
 	}
@@ -81,10 +81,15 @@ func (t *Tree) findRange(keyStart, keyEnd int, verbose bool, returnedKeys []int,
 		// for i = i; i < n.NumKeys && n.Keys[i] <= keyEnd; i++ {
 		for i = 0; i < n.NumKeys && n.Keys[i] <= keyEnd; i++ {
 			returnedKeys[numFound] = n.Keys[i]
-			returnedPointers[numFound] = n.Pointers[i]
-			numFound++
+			curr := n.Pointers[i]
+			var recordPtrs []*Record = iterLeafLL(curr.(*Record))
+
+			for _, recPtr := range recordPtrs {
+				returnedPointers[numFound] = recPtr
+				numFound++
+			}
 		}
-		n, _ = n.Pointers[N-1].(*Node)
+		n, _ = n.Pointers[N-1].(*Node) //go to the next leaf node
 		i = 0
 	}
 	return numFound
@@ -102,6 +107,7 @@ func (t *Tree) findLeaf(key int, verbose bool) *Node {
 		return c
 	}
 
+	// traverse down the tree till reach leaf node
 	for !c.IsLeaf {
 		if verbose {
 			fmt.Printf("[")

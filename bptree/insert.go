@@ -11,13 +11,6 @@ func (t *Tree) Insert(key int, value []byte) error {
 	var pointer *Record
 	var leaf *Node
 
-	// edit
-	if _, err := t.Find(key, false); err == nil {
-		// TODO: add logic for traversal if key already exists
-		fmt.Printf("key exists!")
-		return errors.New("key already exists")
-	}
-
 	// Inserting a new key
 	pointer, err := makeRecord(value)
 	if err != nil {
@@ -30,8 +23,8 @@ func (t *Tree) Insert(key int, value []byte) error {
 
 	leaf = t.findLeaf(key, false)
 
-	// if space exists in the leaf, insert the key directly
-	if leaf.NumKeys < N-1 {
+	// if leaf node contains the key we want we can just insert to leaf node
+	if leaf.NumKeys < N-1 || contains(leaf.Keys, key) {
 		insertIntoLeaf(leaf, key, pointer)
 		return nil
 	}
@@ -51,14 +44,37 @@ func getLeftIndex(parent, left *Node) int {
 	return leftIndex
 }
 
-// implement binsearch
-func insertIntoLeaf(leaf *Node, key int, pointer *Record) {
-	var i, insertionPoint int
-
+func findInsertionIndex(leaf *Node, key int) int {
+	var insertionPoint int
 	for insertionPoint < leaf.NumKeys && leaf.Keys[insertionPoint] < key {
 		insertionPoint++
 	}
+	return insertionPoint
+}
 
+// insert record in to leaf node
+func insertIntoLeaf(leaf *Node, key int, pointer *Record) {
+	var i int
+
+	var insertionPoint int = findInsertionIndex(leaf, key)
+
+	// key found in the leaf node
+	if leaf.Keys[insertionPoint] == key {
+		curr := leaf.Pointers[insertionPoint]
+		if curr == nil {
+			// no records yet
+			leaf.Pointers[insertionPoint] = pointer
+			return
+		} else {
+			// get last leaf node
+			var nodes []*Record = iterLeafLL(curr.(*Record))
+			lastRecNode := nodes[len(nodes)-1]
+			lastRecNode.Next = pointer
+			return
+		}
+	}
+
+	// leaf not found in leaf node keys, move everything right and insert
 	for i = leaf.NumKeys; i > insertionPoint; i-- {
 		leaf.Keys[i] = leaf.Keys[i-1]
 		leaf.Pointers[i] = leaf.Pointers[i-1]
@@ -72,7 +88,7 @@ func insertIntoLeaf(leaf *Node, key int, pointer *Record) {
 // implement binsearch
 func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record) error {
 	var newLeaf *Node
-	var insertionIndex, split, newKey, i, j int
+	var split, newKey, i, j int
 	var err error
 
 	newLeaf, err = makeLeaf()
@@ -81,20 +97,18 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record
 	}
 
 	tempKeys := make([]int, N)
-	if tempKeys == nil {
-		return errors.New("error: unble to create temporary keys array")
-	}
+	// if tempKeys == nil {
+	// 	return errors.New("error: Temporary keys array")
+	// }
 
 	tempPointers := make([]interface{}, N)
-	if tempPointers == nil {
-		return errors.New("error: unable to create temporary pointers array")
-	}
+	// if tempPointers == nil {
+	// 	return errors.New("error: Temporary pointers array")
+	// }
 
-	// iterate through the current leaf node and find the insertion point
-	for insertionIndex < N-1 && leaf.Keys[insertionIndex] < key {
-		insertionIndex++
-	}
+	var insertionIndex = findInsertionIndex(leaf, key)
 
+	// copy the array and insert at insertion point
 	for i = 0; i < leaf.NumKeys; i++ {
 		// skips the space of the insertion index
 		if j == insertionIndex {
@@ -110,8 +124,7 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record
 
 	leaf.NumKeys = 0
 
-	// floor(N/2)
-	split = cut(N - 1)
+	split = findMidPoint(N - 1)
 
 	// could just make use of copy to do this
 	for i = 0; i < split; i++ {
@@ -128,11 +141,12 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record
 		j++
 	}
 
-  // adjust the last pointer to the next node
-	newLeaf.Pointers[N-1] = leaf.Pointers[N-1]
-	leaf.Pointers[N-1] = newLeaf
+	// newLeaf.Pointers[N-1] = leaf.Pointers[N-1]
+	// leaf.Pointers[N-1] = []*Record{newLeaf}
+	newLeaf.Next = leaf.Next
+	leaf.Next = newLeaf.Next
 
-  // set the indices after insertion point to nil
+	// set the indices after insertion point to nil
 	for i = leaf.NumKeys; i < N-1; i++ {
 		leaf.Pointers[i] = nil
 	}
@@ -198,7 +212,7 @@ func (t *Tree) insertIntoNodeAfterSplitting(oldNode *Node, leftIndex, key int, r
 
 	tempKeys[leftIndex] = key
 
-	split = cut(N)
+	split = findMidPoint(N)
 	newNode, err = makeNode()
 	if err != nil {
 		return err

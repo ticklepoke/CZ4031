@@ -141,8 +141,8 @@ func (t *Tree) pathToRoot(child *Node) int {
 	return length
 }
 
-// cut - return num keys needed during insertion and deletion
-func cut(length int) int {
+// findMidPoint - return num keys needed during insertion and deletion
+func findMidPoint(length int) int {
 	if length%2 == 0 {
 		return length / 2
 	}
