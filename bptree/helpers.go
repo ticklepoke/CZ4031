@@ -2,10 +2,12 @@ package bptree
 
 import (
 	"fmt"
+	"strconv"
 )
 
 func (t *Tree) PrintTree() {
 	var n *Node
+	numberOfNodes := 0
 	i := 0
 	rank := 0
 	new_rank := 0
@@ -18,6 +20,7 @@ func (t *Tree) PrintTree() {
 	enqueue(t.Root)
 	for queue != nil {
 		n = dequeue()
+		numberOfNodes++
 		if n != nil {
 			if n.Parent != nil && n == n.Parent.Pointers[0] {
 				new_rank = t.pathToRoot(n)
@@ -43,7 +46,7 @@ func (t *Tree) PrintTree() {
 			}
 			if verbose_output {
 				if n.IsLeaf {
-					fmt.Printf("%d ", n.Pointers[order-1])
+					fmt.Printf("%d ", n.Pointers[N-1])
 				} else {
 					fmt.Printf("%d ", n.Pointers[n.NumKeys])
 				}
@@ -51,9 +54,17 @@ func (t *Tree) PrintTree() {
 			fmt.Printf(" | ")
 		}
 	}
+
+	fmt.Printf("\nNumber of Nodes: %v\n", numberOfNodes)
 	fmt.Printf("\n")
 }
 
+// PrintHeight prints the height of the tree
+func (t *Tree) PrintHeight() {
+	fmt.Printf("Height: %v", strconv.Itoa(t.Height()))
+}
+
+// PrintLeaves print leaves
 func (t *Tree) PrintLeaves() {
 	if t.Root == nil {
 		fmt.Printf("Empty tree.\n")
@@ -74,11 +85,11 @@ func (t *Tree) PrintLeaves() {
 			fmt.Printf("%d ", c.Keys[i])
 		}
 		if verbose_output {
-			fmt.Printf("%d ", c.Pointers[order-1])
+			fmt.Printf("%d ", c.Pointers[N-1])
 		}
-		if c.Pointers[order-1] != nil {
+		if c.Pointers[N-1] != nil {
 			fmt.Printf(" | ")
-			c, _ = c.Pointers[order-1].(*Node)
+			c, _ = c.Pointers[N-1].(*Node)
 		} else {
 			break
 		}
@@ -110,7 +121,7 @@ func dequeue() *Node {
 	return n
 }
 
-func (t *Tree) height() int {
+func (t *Tree) Height() int {
 	h := 0
 	c := t.Root
 	for !c.IsLeaf {

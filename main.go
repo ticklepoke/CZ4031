@@ -9,7 +9,7 @@ import (
 
 func main() {
 
-	t := bptree.NewTree()
+	t := bptree.NewTree(4)
 
 	// Insertion example
 	// 1, 4, 7, 10, 17, 21, 31, 25, 19, 20, 28, 42
@@ -33,8 +33,6 @@ func main() {
 			fmt.Printf("error: %s\n\n", err)
 		}
 	}
-
-	// t.Delete(5)
 
 	t.PrintTree()
 

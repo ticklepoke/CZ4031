@@ -84,7 +84,7 @@ func (t *Tree) findRange(keyStart, keyEnd int, verbose bool, returnedKeys []int,
 			returnedPointers[numFound] = n.Pointers[i]
 			numFound++
 		}
-		n, _ = n.Pointers[order-1].(*Node)
+		n, _ = n.Pointers[N-1].(*Node)
 		i = 0
 	}
 	return numFound
