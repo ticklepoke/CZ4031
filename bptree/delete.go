@@ -192,9 +192,9 @@ func (t *Tree) deleteEntry(n *Node, key int, pointer interface{}) {
 	}
 
 	if n.IsLeaf {
-		min_keys = cut(N - 1)
+		min_keys = findMidPoint(order - 1)
 	} else {
-		min_keys = cut(N) - 1
+		min_keys = findMidPoint(order) - 1
 	}
 
 	if n.NumKeys >= min_keys {

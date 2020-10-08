@@ -26,7 +26,7 @@ func main() {
 		}
 	}
 
-	// t.PrintTree()
+	t.PrintTree()
 
 	b := blockmanager.InitializeBlockManager(100)
 
