@@ -17,5 +17,5 @@ func main() {
 		b.InsertRecord(tconts, rating, votes)
 	}
 
-	b.DisplayStatus(true)
+	b.DisplayStatus(false)
 }
