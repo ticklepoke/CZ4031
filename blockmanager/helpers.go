@@ -3,17 +3,26 @@ package blockmanager
 import (
 	"bytes"
 	"fmt"
+	"strconv"
 )
 
 // DisplayStatus - get status of blockmanager and print the state of the
 // current block
 func (b BlockManager) DisplayStatus(verbose bool) {
+	numBlocks, numRecords := b.numBlocks, b.numRecords
+	fmt.Printf("num blocks:\t%s\n", strconv.Itoa(numBlocks))
+	fmt.Printf("num records:\t%s\n", strconv.Itoa(numRecords))
+
 	if verbose {
-		fmt.Println(b)
-		fmt.Println("deleted records", b.markedDeleted)
-		fmt.Println("byte block", *b.blocks[b.numBlocks-1])
+		fmt.Printf("current count:\t%s\n", strconv.Itoa(b.currentCount))
+		fmt.Printf("has capacity:\t%s\n", strconv.FormatBool(b.hasCapacity))
+		fmt.Printf("block size:\t%s\n\n", strconv.Itoa(b.BLOCKSIZE))
+
+		fmt.Println("deleted records:", b.markedDeleted)
+		// fmt.Println("byte block:", b.blocks[b.numBlocks-1])
 	}
-	b.printRecords(true)
+	fmt.Println()
+	b.printRecords(verbose)
 }
 
 // PrintRecord - parses and prints bytes slice at record address
