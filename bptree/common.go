@@ -19,7 +19,7 @@ type Tree struct {
 	Root *Node
 }
 
-// serialize and unserialize function / library
+// Record serialize and unserialize function / library
 type Record struct {
 	Value []byte
 }
@@ -38,7 +38,9 @@ type Node struct {
 	Next     *Node
 }
 
-func NewTree() *Tree {
+// NewTree Constructor with Order
+func NewTree(treeOrder int) *Tree {
+	order = treeOrder
 	return &Tree{}
 }
 

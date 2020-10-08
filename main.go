@@ -12,7 +12,7 @@ import (
 
 func main() {
 
-	t := bptree.NewTree()
+	t := bptree.NewTree(4)
 
 	// Insert 1, 4, 7, 10, 17, 21, 31, 25, 19, 20, 28, 42
 	// lecture example
@@ -26,7 +26,7 @@ func main() {
 		}
 	}
 
-	// t.PrintTree()
+	t.PrintTree()
 
 	b := blockmanager.InitializeBlockManager(100)
 
