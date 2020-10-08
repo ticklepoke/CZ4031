@@ -2,6 +2,7 @@ package bptree
 
 import (
 	"errors"
+	"fmt"
 )
 
 // Insert - implement duplicate key insertion functionality
@@ -145,7 +146,7 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record
 	newLeaf.Next = leaf.Next
 	leaf.Next = newLeaf.Next
 
-  // set the indices after insertion point to nil
+	// set the indices after insertion point to nil
 	for i = leaf.NumKeys; i < N-1; i++ {
 		leaf.Pointers[i] = nil
 	}
