@@ -16,7 +16,7 @@ func (t *Tree) Insert(key int, value []byte) error {
 		// TODO: add logic for traversal if key already exists
 		fmt.Printf("key exists!")
 		return errors.New("key already exists")
-	} 
+	}
 
 	// Inserting a new key
 	pointer, err := makeRecord(value)
@@ -30,11 +30,11 @@ func (t *Tree) Insert(key int, value []byte) error {
 
 	leaf = t.findLeaf(key, false)
 
-	if leaf.NumKeys < order-1 {
+	// No need to split, can just insert at leaf
+	if leaf.NumKeys < N-1 {
 		insertIntoLeaf(leaf, key, pointer)
 		return nil
 	}
-
 
 	return t.insertIntoLeafAfterSplitting(leaf, key, pointer)
 }
@@ -79,17 +79,17 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record
 		return nil
 	}
 
-	tempKeys := make([]int, order)
+	tempKeys := make([]int, N)
 	if tempKeys == nil {
-		return errors.New("error: Temporary keys array")
+		return errors.New("error: unble to create temporary keys array")
 	}
 
-	tempPointers := make([]interface{}, order)
+	tempPointers := make([]interface{}, N)
 	if tempPointers == nil {
-		return errors.New("error: Temporary pointers array")
+		return errors.New("error: unable to create temporary pointers array")
 	}
 
-	for insertionIndex < order-1 && leaf.Keys[insertionIndex] < key {
+	for insertionIndex < N-1 && leaf.Keys[insertionIndex] < key {
 		insertionIndex++
 	}
 
@@ -107,7 +107,8 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record
 
 	leaf.NumKeys = 0
 
-	split = cut(order - 1)
+	// floor(N/2)
+	split = cut(N - 1)
 
 	for i = 0; i < split; i++ {
 		leaf.Pointers[i] = tempPointers[i]
@@ -116,24 +117,23 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record
 	}
 
 	j = 0
-	for i = split; i < order; i++ {
+	for i = split; i < N; i++ {
 		newLeaf.Pointers[j] = tempPointers[i]
 		newLeaf.Keys[j] = tempKeys[i]
 		newLeaf.NumKeys++
 		j++
 	}
 
-	newLeaf.Pointers[order-1] = leaf.Pointers[order-1]
-	leaf.Pointers[order-1] = newLeaf
+	newLeaf.Pointers[N-1] = leaf.Pointers[N-1]
+	leaf.Pointers[N-1] = newLeaf
 
-	for i = leaf.NumKeys; i < order-1; i++ {
+	for i = leaf.NumKeys; i < N-1; i++ {
 		leaf.Pointers[i] = nil
 	}
-	for i = newLeaf.NumKeys; i < order-1; i++ {
+	for i = newLeaf.NumKeys; i < N-1; i++ {
 		newLeaf.Pointers[i] = nil
 	}
 
-	// point to the left for dup keys
 	newLeaf.Parent = leaf.Parent
 	newKey = newLeaf.Keys[0]
 
@@ -159,14 +159,14 @@ func (t *Tree) insertIntoNodeAfterSplitting(oldNode *Node, leftIndex, key int, r
 	var tempPointers []interface{}
 	var err error
 
-	tempPointers = make([]interface{}, order+1)
+	tempPointers = make([]interface{}, N+1)
 	if tempPointers == nil {
-		return errors.New("error: Temporary pointers array for splitting nodes")
+		return errors.New("error: unable to make temporary pointers array for splitting nodes")
 	}
 
-	tempKeys = make([]int, order)
+	tempKeys = make([]int, N)
 	if tempKeys == nil {
-		return errors.New("error: Temporary keys array for splitting nodes")
+		return errors.New("error: unable to make temporary keys array for splitting nodes")
 	}
 
 	for i = 0; i < oldNode.NumKeys+1; i++ {
@@ -189,7 +189,7 @@ func (t *Tree) insertIntoNodeAfterSplitting(oldNode *Node, leftIndex, key int, r
 	tempPointers[leftIndex+1] = right
 	tempKeys[leftIndex] = key
 
-	split = cut(order)
+	split = cut(N)
 	newNode, err = makeNode()
 	if err != nil {
 		return err
@@ -203,7 +203,8 @@ func (t *Tree) insertIntoNodeAfterSplitting(oldNode *Node, leftIndex, key int, r
 	oldNode.Pointers[i] = tempPointers[i]
 	kPrime = tempKeys[split-1]
 	j = 0
-	for i += 1; i < order; i++ {
+	// for i += 1; i < N; i++ {
+	for i += 1; i < N; i++ {
 		newNode.Pointers[j] = tempPointers[i]
 		newNode.Keys[j] = tempKeys[i]
 		newNode.NumKeys++
@@ -228,7 +229,7 @@ func (t *Tree) insertIntoParent(left *Node, key int, right *Node) error {
 	}
 	leftIndex = getLeftIndex(parent, left)
 
-	if parent.NumKeys < order-1 {
+	if parent.NumKeys < N-1 {
 		insertIntoNode(parent, leftIndex, key, right)
 		return nil
 	}

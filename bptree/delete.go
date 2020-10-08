@@ -54,11 +54,11 @@ func removeEntryFromNode(n *Node, key int, pointer interface{}) *Node {
 	n.NumKeys -= 1
 
 	if n.IsLeaf {
-		for i = n.NumKeys; i < order-1; i++ {
+		for i = n.NumKeys; i < N-1; i++ {
 			n.Pointers[i] = nil
 		}
 	} else {
-		for i = n.NumKeys + 1; i < order; i++ {
+		for i = n.NumKeys + 1; i < N; i++ {
 			n.Pointers[i] = nil
 		}
 	}
@@ -123,7 +123,7 @@ func (t *Tree) coalesceNodes(n, neighbour *Node, neighbour_index, k_prime int) {
 			n.Pointers[i] = n.Pointers[j]
 			neighbour.NumKeys += 1
 		}
-		neighbour.Pointers[order-1] = n.Pointers[order-1]
+		neighbour.Pointers[N-1] = n.Pointers[N-1]
 	}
 
 	t.deleteEntry(n.Parent, k_prime, n)
@@ -192,9 +192,9 @@ func (t *Tree) deleteEntry(n *Node, key int, pointer interface{}) {
 	}
 
 	if n.IsLeaf {
-		min_keys = cut(order - 1)
+		min_keys = cut(N - 1)
 	} else {
-		min_keys = cut(order) - 1
+		min_keys = cut(N) - 1
 	}
 
 	if n.NumKeys >= min_keys {
@@ -218,9 +218,9 @@ func (t *Tree) deleteEntry(n *Node, key int, pointer interface{}) {
 	}
 
 	if n.IsLeaf {
-		capacity = order
+		capacity = N
 	} else {
-		capacity = order - 1
+		capacity = N - 1
 	}
 
 	if neighbour.NumKeys+n.NumKeys < capacity {
