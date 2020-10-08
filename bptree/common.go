@@ -32,7 +32,7 @@ type Record struct {
 // delete record
 
 type Node struct {
-	Pointers []*Record
+	Pointers []interface{}
 	Keys     []int
 	Parent   *Node
 	IsLeaf   bool
@@ -47,13 +47,13 @@ func NewTree() *Tree {
 // call block manager
 // allocate space to the record
 func makeRecord(value []byte) (*Record, error) {
-	new_record := new(Record)
-	if new_record == nil {
-		return nil, errors.New("Error: Record creation.")
+	newRecord := new(Record)
+	if newRecord == nil {
+		return nil, errors.New("Error: Record creation")
 	} else {
-		new_record.Value = value
+		newRecord.Value = value
 	}
-	return new_record, nil
+	return newRecord, nil
 }
 
 func makeNode() (*Node, error) {
@@ -65,7 +65,7 @@ func makeNode() (*Node, error) {
 	if new_node.Keys == nil {
 		return nil, errors.New("Error: New node keys array.")
 	}
-	new_node.Pointers = make([]*Record, order)
+	new_node.Pointers = make([]interface{}, N)
 	if new_node.Keys == nil {
 		return nil, errors.New("Error: New node pointers array.")
 	}
@@ -107,7 +107,7 @@ func contains(arrSearch []int, valSearch int) bool {
 	return false
 }
 
-func (t *Tree) iterLeafLL(recordPtr *Record) []*Record {
+func iterLeafLL(recordPtr *Record) []*Record {
 	// iterate over the LL at the leaf node returning the list of records
 	var recordsArr []*Record
 	curr := recordPtr

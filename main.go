@@ -17,7 +17,7 @@ func main() {
 	// Insert 1, 4, 7, 10, 17, 21, 31, 25, 19, 20, 28, 42
 	// lecture example
 
-	arr := [12]int{1, 4, 7, 10, 17, 21, 31, 25, 19, 20, 28, 42}
+	arr := []int{1, 4, 7, 10, 17, 21, 31, 25, 19, 20, 28, 42, 42, 42, 21, 4}
 
 	for _, num := range arr {
 		err := t.Insert(num, []byte("hello friend"+strconv.Itoa(num)))
@@ -27,6 +27,9 @@ func main() {
 	}
 
 	t.PrintTree()
+	t.FindAndPrint(42, false)
+	t.FindAndPrint(4, false)
+	t.FindAndPrint(21, false)
 
 	b := blockmanager.InitializeBlockManager(100)
 

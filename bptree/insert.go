@@ -23,7 +23,7 @@ func (t *Tree) Insert(key int, value []byte) error {
 	leaf = t.findLeaf(key, false)
 
 	// if leaf node contains the key we want we can just insert to leaf node
-	if leaf.NumKeys < order-1 || contains(leaf.Keys, key) {
+	if leaf.NumKeys < N-1 || contains(leaf.Keys, key) {
 		insertIntoLeaf(leaf, key, pointer)
 		return nil
 	}
@@ -54,7 +54,7 @@ func findInsertionIndex(leaf *Node, key int) int {
 func insertIntoLeaf(leaf *Node, key int, pointer *Record) {
 	var i int
 
-	var insertionPoint = findInsertionIndex(leaf, key)
+	var insertionPoint int = findInsertionIndex(leaf, key)
 
 	// key found in the leaf node
 	if leaf.Keys[insertionPoint] == key {
@@ -65,9 +65,10 @@ func insertIntoLeaf(leaf *Node, key int, pointer *Record) {
 			return
 		} else {
 			// get last leaf node
-			var nodes []*Record = iterLeafLL(curr)
+			var nodes []*Record = iterLeafLL(curr.(*Record))
 			lastRecNode := nodes[len(nodes)-1]
 			lastRecNode.Next = pointer
+			return
 		}
 	}
 
@@ -93,12 +94,12 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record
 		return nil
 	}
 
-	tempKeys := make([]int, order)
+	tempKeys := make([]int, N)
 	// if tempKeys == nil {
 	// 	return errors.New("error: Temporary keys array")
 	// }
 
-	tempPointers := make([]*Record, order)
+	tempPointers := make([]interface{}, N)
 	// if tempPointers == nil {
 	// 	return errors.New("error: Temporary pointers array")
 	// }
@@ -120,7 +121,7 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record
 
 	leaf.NumKeys = 0
 
-	split = findMidPoint(order - 1)
+	split = findMidPoint(N - 1)
 
 	for i = 0; i < split; i++ {
 		leaf.Pointers[i] = tempPointers[i]
@@ -136,8 +137,8 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record
 		j++
 	}
 
-	// newLeaf.Pointers[order-1] = leaf.Pointers[order-1]
-	// leaf.Pointers[order-1] = []*Record{newLeaf}
+	// newLeaf.Pointers[N-1] = leaf.Pointers[N-1]
+	// leaf.Pointers[N-1] = []*Record{newLeaf}
 	newLeaf.Next = leaf.Next
 	leaf.Next = newLeaf.Next
 
@@ -203,7 +204,7 @@ func (t *Tree) insertIntoNodeAfterSplitting(oldNode *Node, leftIndex, key int, r
 	tempPointers[leftIndex+1] = right
 	tempKeys[leftIndex] = key
 
-	split = findMidPoint(order)
+	split = findMidPoint(N)
 	newNode, err = makeNode()
 	if err != nil {
 		return err
