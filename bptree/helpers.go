@@ -43,7 +43,7 @@ func (t *Tree) PrintTree() {
 			}
 			if verbose_output {
 				if n.IsLeaf {
-					fmt.Printf("%d ", n.Pointers[order-1])
+					fmt.Printf("%d ", n.Pointers[N-1])
 				} else {
 					fmt.Printf("%d ", n.Pointers[n.NumKeys])
 				}
@@ -74,11 +74,11 @@ func (t *Tree) PrintLeaves() {
 			fmt.Printf("%d ", c.Keys[i])
 		}
 		if verbose_output {
-			fmt.Printf("%d ", c.Pointers[order-1])
+			fmt.Printf("%d ", c.Pointers[N-1])
 		}
-		if c.Pointers[order-1] != nil {
+		if c.Pointers[N-1] != nil {
 			fmt.Printf(" | ")
-			c, _ = c.Pointers[order-1].(*Node)
+			c, _ = c.Pointers[N-1].(*Node)
 		} else {
 			break
 		}

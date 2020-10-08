@@ -5,11 +5,12 @@ import "errors"
 var (
 	err error
 
-	defaultOrder = 4
-	minOrder     = 3
-	maxOrder     = 20
+	// defaultOrder = 4
+	// minOrder     = 3
+	// maxOrder     = 20
 
-	order          = defaultOrder
+	// order          = defaultOrder
+	N              = 4
 	queue          *Node
 	verbose_output = false
 	version        = 0.1
@@ -59,11 +60,11 @@ func makeNode() (*Node, error) {
 	if new_node == nil {
 		return nil, errors.New("Error: Node creation.")
 	}
-	new_node.Keys = make([]int, order-1)
+	new_node.Keys = make([]int, N-1)
 	if new_node.Keys == nil {
 		return nil, errors.New("Error: New node keys array.")
 	}
-	new_node.Pointers = make([]interface{}, order)
+	new_node.Pointers = make([]interface{}, N)
 	if new_node.Keys == nil {
 		return nil, errors.New("Error: New node pointers array.")
 	}
@@ -90,8 +91,8 @@ func (t *Tree) startNewTree(key int, pointer *Record) error {
 	}
 	t.Root.Keys[0] = key
 	t.Root.Pointers[0] = pointer
-	t.Root.Pointers[order-1] = nil
+	t.Root.Pointers[N-1] = nil
 	t.Root.Parent = nil
-	t.Root.NumKeys += 1
+	t.Root.NumKeys++
 	return nil
 }
