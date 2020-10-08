@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/ticklepoke/CZ4031/blockmanager"
+	"github.com/ticklepoke/CZ4031/tsvparser"
 
 	"github.com/ticklepoke/CZ4031/bptree"
 )
@@ -26,26 +27,18 @@ func main() {
 	}
 
 	// t.PrintTree()
-	t.Find(1)
 
 	b := blockmanager.InitializeBlockManager(100)
 
-	// record deletion
-	// b.InsertRecord("tt0848228", "7.7", "9987")
-	// recAddr := b.InsertRecord("tt0848224", "7.2", "99890")
-	// b.DisplayStatus(false)
+	// testing out tsv
+	rows := tsvparser.ParseTSV("data.tsv")
 
-	// blockmanager.PrintRecord(recAddr)
+	for i := 0; i < 10; i++ {
+		tconts, rating, votes := rows[i][0], rows[i][1], rows[i][2]
 
-	// b.DeleteRecord(recAddr)
-	// b.DisplayStatus(false)
+		// TODO: insert record to bptree
+		b.InsertRecord(tconts, rating, votes)
+	}
 
-	// b.InsertRecord("tt081", "9", "98")
-	// b.DisplayStatus(false)
-
-	// multiple blocks
-	// for i := 0; i < 101; i++ {
-	// 	b.InsertRecord("tt"+strconv.Itoa(i), "7.7", strconv.Itoa(i))
-	// }
-	// b.DisplayStatus(true)
+	b.DisplayStatus(true)
 }
