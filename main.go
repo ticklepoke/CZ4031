@@ -20,12 +20,18 @@ func main() {
 	// Deletion example
 	// build btree with the following
 	// 1, 4, 7, 10, 17, 21, 31, 25, 19, 20, 5
+
 	// delete 5
 	// 20  |
 	// 7 17  | 25  |
 	// 1 4  | 7 10  | 17 19  | 20 21  | 25 31  |
 
-	arr := []int{1, 4, 7, 10, 17, 21, 31, 25, 19, 20, 28, 42, 42, 42, 42}
+	// delete 4
+	// 20  |
+	// 17  | 25  |
+	// 1 7 10  | 17 19  | 20 21  | 25 31  |
+
+	arr := []int{1, 4, 7, 10, 17, 21, 31, 25, 19, 20, 5}
 	for _, num := range arr {
 		err := t.Insert(num, []byte("hello friend"+strconv.Itoa(num)))
 		if err != nil {
@@ -34,12 +40,16 @@ func main() {
 	}
 
 	t.PrintTree()
-	t.FindAndPrint(42, false)
-	t.FindAndPrint(4, false)
-	t.FindAndPrint(21, false)
+	// t.FindAndPrint(42, false)
+	// t.FindAndPrint(4, false)
+	// t.FindAndPrint(21, false)
 
+	fmt.Println("Deleting 5")
 	t.Delete(5)
-	t.Delete(42)
+	t.PrintTree()
+
+	fmt.Println("Deleting 4")
+	t.Delete(4)
 	t.PrintTree()
 
 	// b := blockmanager.InitializeBlockManager(100)

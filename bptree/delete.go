@@ -36,7 +36,7 @@ func removeEntryFromNode(n *Node, key int, pointer interface{}) *Node {
 	for n.Keys[i] != key {
 		i += 1
 	}
-
+	// i is the index of the key
 	for i += 1; i < n.NumKeys; i++ {
 		n.Keys[i-1] = n.Keys[i]
 	}
@@ -89,13 +89,14 @@ func (t *Tree) adjustRoot() {
 }
 
 func (t *Tree) coalesceNodes(n, neighbour *Node, neighbour_index, k_prime int) {
+	// combine two nodes
 	var i, j, neighbour_insertion_index, n_end int
 	var tmp *Node
 
-	if neighbour_index == -1 {
+	if neighbour_index == -1 { // swap n and neighbour node var to standardize neighbour , n
 		tmp = n
 		n = neighbour
-		neighbour = tmp
+		neighbour = tmp // neighbour is the left
 	}
 
 	neighbour_insertion_index = neighbour.NumKeys
@@ -111,7 +112,7 @@ func (t *Tree) coalesceNodes(n, neighbour *Node, neighbour_index, k_prime int) {
 			neighbour.Pointers[i] = n.Pointers[j]
 			neighbour.NumKeys += 1
 			n.NumKeys -= 1
-			i += 1
+			i++
 		}
 		neighbour.Pointers[i] = n.Pointers[j]
 
@@ -125,6 +126,7 @@ func (t *Tree) coalesceNodes(n, neighbour *Node, neighbour_index, k_prime int) {
 			neighbour.Keys[i] = n.Keys[j]
 			n.Pointers[i] = n.Pointers[j]
 			neighbour.NumKeys += 1
+			i++
 		}
 		neighbour.Pointers[N-1] = n.Pointers[N-1]
 	}
@@ -195,17 +197,16 @@ func (t *Tree) deleteEntry(n *Node, key int, pointer interface{}) {
 	}
 
 	if n.IsLeaf {
-		min_keys = findMidPoint(N - 1)
+		min_keys = (N) / 2
 	} else {
-		min_keys = findMidPoint(N) - 1
+		min_keys = (N - 1) / 2
 	}
 
 	if n.NumKeys >= min_keys {
 		return
 	}
 
-	neighbour_index = getNeighbourIndex(n)
-
+	neighbour_index = getNeighbourIndex(n) // combine to the left
 	if neighbour_index == -1 {
 		k_prime_index = 0
 	} else {
@@ -215,18 +216,18 @@ func (t *Tree) deleteEntry(n *Node, key int, pointer interface{}) {
 	k_prime = n.Parent.Keys[k_prime_index]
 
 	if neighbour_index == -1 {
-		neighbour, _ = n.Parent.Pointers[1].(*Node)
+		neighbour, _ = n.Parent.Pointers[1].(*Node) // when most LHS node, neighbour is on the right
 	} else {
 		neighbour, _ = n.Parent.Pointers[neighbour_index].(*Node)
 	}
 
 	if n.IsLeaf {
-		capacity = N
+		capacity = N - 1
 	} else {
 		capacity = N - 1
 	}
 
-	if neighbour.NumKeys+n.NumKeys < capacity {
+	if neighbour.NumKeys+n.NumKeys <= capacity {
 		t.coalesceNodes(n, neighbour, neighbour_index, k_prime)
 		return
 	} else {
