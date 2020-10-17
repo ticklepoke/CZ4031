@@ -1,4 +1,4 @@
-package main
+package experiment
 
 import (
 	"fmt"
@@ -10,8 +10,7 @@ import (
 	"github.com/ticklepoke/CZ4031/tsvparser"
 )
 
-func main() {
-	n := 5
+func experiment2(n int) *bptree.Tree {
 	t := bptree.NewTree(n)
 	rows := tsvparser.ParseTSV("../../data.tsv")
 
@@ -30,4 +29,5 @@ func main() {
 	// t.PrintHeight()
 	t.PrintTree()
 	b.DisplayStatus(false)
+	return t
 }

@@ -1,11 +1,11 @@
-package main
+package experiment
 
 import (
 	"github.com/ticklepoke/CZ4031/blockmanager"
 	"github.com/ticklepoke/CZ4031/tsvparser"
 )
 
-func main() {
+func experiment1() blockmanager.BlockManager {
 	b := blockmanager.InitializeBlockManager(100)
 
 	rows := tsvparser.ParseTSV("../../data.tsv")
@@ -18,4 +18,5 @@ func main() {
 	}
 
 	b.DisplayStatus(false)
+	return b
 }
