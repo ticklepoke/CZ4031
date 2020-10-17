@@ -2,20 +2,20 @@ package bptree
 
 import (
 	"errors"
-	"fmt"
 )
 
 // Insert - implement duplicate key insertion functionality
 // create new node w/o parent pointer (point to the left)
-func (t *Tree) Insert(key int, value []byte) error {
+func (t *Tree) Insert(key int, addr *[]byte) error {
 	var pointer *Record
 	var leaf *Node
 
 	// Inserting a new key
-	pointer, err := makeRecord(value)
-	if err != nil {
-		return err
-	}
+	pointer = &Record{Value: addr}
+	// pointer, err := makeRecord(value)
+	// if err != nil {
+	// 	return err
+	// }
 
 	if t.Root == nil {
 		return t.startNewTree(key, pointer)
@@ -64,12 +64,14 @@ func insertIntoLeaf(leaf *Node, key int, pointer *Record) {
 		if curr == nil {
 			// no records yet
 			leaf.Pointers[insertionPoint] = pointer
+			pointer.Previous = nil
 			return
 		} else {
 			// get last leaf node
 			var nodes []*Record = iterLeafLL(curr.(*Record))
 			lastRecNode := nodes[len(nodes)-1]
 			lastRecNode.Next = pointer
+			pointer.Previous = lastRecNode
 			return
 		}
 	}
@@ -245,7 +247,7 @@ func (t *Tree) insertIntoNodeAfterSplitting(oldNode *Node, leftIndex, key int, r
 
 	for i = 0; i <= oldNode.NumKeys; i++ {
 		child, _ = oldNode.Pointers[i].(*Node)
-		fmt.Println(child.Keys)
+		// fmt.Println(child.Keys)
 	}
 
 	// adjust parent pointer of the two nodes

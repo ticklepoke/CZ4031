@@ -19,8 +19,9 @@ type Tree struct {
 
 // Record serialize and unserialize function / library
 type Record struct {
-	Value []byte
-	Next  *Record
+	Value    *[]byte
+	Next     *Record
+	Previous *Record
 }
 
 // block manager struct
@@ -46,15 +47,15 @@ func NewTree(n int) *Tree {
 
 // call block manager
 // allocate space to the record
-func makeRecord(value []byte) (*Record, error) {
-	newRecord := new(Record)
-	if newRecord == nil {
-		return nil, errors.New("Error: Record creation")
-	} else {
-		newRecord.Value = value
-	}
-	return newRecord, nil
-}
+// func makeRecord(value []byte) (*Record, error) {
+// 	newRecord := new(Record)
+// 	if newRecord == nil {
+// 		return nil, errors.New("Error: Record creation")
+// 	} else {
+// 		newRecord.Value = value
+// 	}
+// 	return newRecord, nil
+// }
 
 func makeNode() (*Node, error) {
 	newNode := new(Node)

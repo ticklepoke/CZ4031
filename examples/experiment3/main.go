@@ -10,7 +10,7 @@ import (
 func main() {
 	n := 5
 	t := bptree.NewTree(n)
-	rows := tsvparser.ParseTSV("../data.tsv")
+	rows := tsvparser.ParseTSV("../../data.tsv")
 
 	for _, s := range rows {
 		tconsts, ratingString, votes := s[0], s[1], s[2]
