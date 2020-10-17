@@ -25,7 +25,7 @@ func experiment1() {
 	b.DisplayStatus(false)
 }
 
-func experiment2(n int) *bptree.Tree {
+func experiment2(n int) (blockmanager.BlockManager, *bptree.Tree) {
 	t := bptree.NewTree(n)
 	rows := tsvparser.ParseTSV("../../data.tsv")
 
@@ -44,7 +44,7 @@ func experiment2(n int) *bptree.Tree {
 	// t.PrintHeight()
 	t.PrintTree()
 	b.DisplayStatus(false)
-	return t
+	return b, t
 }
 
 func experiment3(t *bptree.Tree) {
@@ -55,7 +55,8 @@ func experiment4(t *bptree.Tree) {
 	t.FindAndPrintRange(7, 9, true)
 }
 
-func experiment5(t *bptree.Tree) {
+func experiment5(b blockmanager.BlockManager, t *bptree.Tree) {
+	start := time.Now()
 	t.Delete(7)
 	t.PrintTree()
 	t.PrintHeight()
@@ -68,8 +69,8 @@ func experiment5(t *bptree.Tree) {
 func main() {
 	n := 5
 	// b := experiment1()
-	t := experiment2(n)
+	b, t := experiment2(n)
 	experiment3(t)
 	experiment4(t)
-	experiment5(t)
+	experiment5(b, t)
 }
