@@ -69,7 +69,7 @@ func (t *Tree) findRange(keyStart, keyEnd int, verbose bool, returnedKeys *[]int
 	var i, left_bound int
 	numFound := 0
 
-	n := t.FindLeaf(keyStart, verbose)
+	n := t.findLeaf(keyStart, verbose)
 	if n == nil {
 		return 0
 	}
