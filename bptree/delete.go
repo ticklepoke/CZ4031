@@ -128,7 +128,7 @@ func (t *Tree) coalesceNodes(n, neighbour *Node, neighbour_index, k_prime int) {
 		for j = 0; j < n.NumKeys; j++ {
 			neighbour.Keys[i] = n.Keys[j]
 			n.Pointers[i] = n.Pointers[j]
-			neighbour.NumKeys += 1
+			neighbour.NumKeys++
 			i++
 		}
 		neighbour.Pointers[N-1] = n.Pointers[N-1]
@@ -224,11 +224,7 @@ func (t *Tree) deleteEntry(n *Node, key int, pointer interface{}) {
 		neighbour, _ = n.Parent.Pointers[neighbour_index].(*Node)
 	}
 
-	if n.IsLeaf {
-		capacity = N - 1
-	} else {
-		capacity = N - 1
-	}
+	capacity = N - 1
 
 	if neighbour.NumKeys+n.NumKeys <= capacity {
 		t.coalesceNodes(n, neighbour, neighbour_index, k_prime)
@@ -237,5 +233,4 @@ func (t *Tree) deleteEntry(n *Node, key int, pointer interface{}) {
 		t.redistributeNodes(n, neighbour, neighbour_index, k_prime_index, k_prime)
 		return
 	}
-
 }

@@ -27,16 +27,20 @@ func experiment1() {
 
 func experiment2(n int) (blockmanager.BlockManager, *bptree.Tree) {
 	t := bptree.NewTree(n)
-	rows := tsvparser.ParseTSV("../../data.tsv")
+	rows := tsvparser.ParseTSV("./data.tsv")
 
 	b := blockmanager.InitializeBlockManager(100)
-
+	i := 0
 	for _, s := range rows {
+		if i == 10 {
+			break
+		}
 		tconsts, rating, votes := s[0], s[1], s[2]
 		key, _ := strconv.ParseFloat(rating, 64)
 		addr := b.InsertRecord(tconsts, rating, votes)
 		fmt.Println(tconsts, key)
 		t.Insert(int(key*10), addr)
+		i++
 	}
 
 	// t.PrintOrder()
