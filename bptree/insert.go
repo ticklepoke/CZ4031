@@ -64,14 +64,12 @@ func insertIntoLeaf(leaf *Node, key int, pointer *Record) {
 		if curr == nil {
 			// no records yet
 			leaf.Pointers[insertionPoint] = pointer
-			pointer.Previous = nil
 			return
 		} else {
 			// get last leaf node
 			var nodes []*Record = iterLeafLL(curr.(*Record))
 			lastRecNode := nodes[len(nodes)-1]
 			lastRecNode.Next = pointer
-			pointer.Previous = lastRecNode
 			return
 		}
 	}
