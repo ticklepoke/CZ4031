@@ -7,7 +7,7 @@ import (
 
 // Insert - implement duplicate key insertion functionality
 // create new node w/o parent pointer (point to the left)
-func (t *Tree) Insert(key int, addr *[]byte) error {
+func (t *Tree) Insert(key float64, addr *[]byte) error {
 	var pointer *Record
 	var leaf *Node
 
@@ -45,7 +45,7 @@ func getLeftIndex(parent, left *Node) int {
 	return leftIndex
 }
 
-func findInsertionIndex(leaf *Node, key int) int {
+func findInsertionIndex(leaf *Node, key float64) int {
 	var insertionPoint int
 	for insertionPoint < leaf.NumKeys && leaf.Keys[insertionPoint] < key {
 		insertionPoint++
@@ -54,7 +54,7 @@ func findInsertionIndex(leaf *Node, key int) int {
 }
 
 // insert record in to leaf node
-func insertIntoLeaf(leaf *Node, key int, pointer *Record) {
+func insertIntoLeaf(leaf *Node, key float64, pointer *Record) {
 	var i int
 
 	var insertionPoint int = findInsertionIndex(leaf, key)
@@ -93,9 +93,10 @@ func insertIntoLeaf(leaf *Node, key int, pointer *Record) {
 	return
 }
 
-func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record) error {
+func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key float64, pointer *Record) error {
 	var newLeaf *Node
-	var split, newKey, i, j int
+	var split, i, j int
+	var newKey float64
 	var err error
 
 	newLeaf, err = makeLeaf()
@@ -103,7 +104,7 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record
 		return nil
 	}
 
-	tempKeys := make([]int, N)
+	tempKeys := make([]float64, N)
 	// if tempKeys == nil {
 	// 	return errors.New("error: Temporary keys array")
 	// }
@@ -174,7 +175,7 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record
 	return t.insertIntoParent(leaf, newKey, newLeaf)
 }
 
-func insertIntoNode(n *Node, leftIndex, key int, right *Node) {
+func insertIntoNode(n *Node, leftIndex int, key float64, right *Node) {
 	var i int
 	for i = n.NumKeys; i > leftIndex; i-- {
 		n.Pointers[i+1] = n.Pointers[i]
@@ -186,10 +187,11 @@ func insertIntoNode(n *Node, leftIndex, key int, right *Node) {
 }
 
 // implement binsearch
-func (t *Tree) insertIntoNodeAfterSplitting(oldNode *Node, leftIndex, key int, right *Node) error {
-	var i, j, split, kPrime int
+func (t *Tree) insertIntoNodeAfterSplitting(oldNode *Node, leftIndex int, key float64, right *Node) error {
+	var i, j, split int
+	var kPrime float64
 	var newNode, child *Node
-	var tempKeys []int
+	var tempKeys []float64
 	var tempPointers []interface{}
 	var err error
 
@@ -198,7 +200,7 @@ func (t *Tree) insertIntoNodeAfterSplitting(oldNode *Node, leftIndex, key int, r
 		return errors.New("error: unable to make temporary pointers array for splitting nodes")
 	}
 
-	tempKeys = make([]int, N)
+	tempKeys = make([]float64, N)
 	if tempKeys == nil {
 		return errors.New("error: unable to make temporary keys array for splitting nodes")
 	}
@@ -264,7 +266,7 @@ func (t *Tree) insertIntoNodeAfterSplitting(oldNode *Node, leftIndex, key int, r
 	return t.insertIntoParent(oldNode, kPrime, newNode)
 }
 
-func (t *Tree) insertIntoParent(left *Node, key int, right *Node) error {
+func (t *Tree) insertIntoParent(left *Node, key float64, right *Node) error {
 	var leftIndex int
 	parent := left.Parent
 
@@ -284,7 +286,7 @@ func (t *Tree) insertIntoParent(left *Node, key int, right *Node) error {
 	return t.insertIntoNodeAfterSplitting(parent, leftIndex, key, right)
 }
 
-func (t *Tree) insertIntoNewRoot(left *Node, key int, right *Node) error {
+func (t *Tree) insertIntoNewRoot(left *Node, key float64, right *Node) error {
 	t.Root, err = makeNode()
 	if err != nil {
 		return err

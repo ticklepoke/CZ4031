@@ -32,7 +32,7 @@ type Record struct {
 type Node struct {
 	Pointers     []interface{}
 	TailPointers []interface{}
-	Keys         []int
+	Keys         []float64
 	Parent       *Node
 	IsLeaf       bool
 	NumKeys      int
@@ -62,7 +62,7 @@ func makeNode() (*Node, error) {
 	if newNode == nil {
 		return nil, errors.New("Error: Node creation")
 	}
-	newNode.Keys = make([]int, N-1)
+	newNode.Keys = make([]float64, N-1)
 	if newNode.Keys == nil {
 		return nil, errors.New("Error: New node keys array")
 	}
@@ -87,7 +87,7 @@ func makeLeaf() (*Node, error) {
 	return leaf, nil
 }
 
-func (t *Tree) startNewTree(key int, pointer *Record) error {
+func (t *Tree) startNewTree(key float64, pointer *Record) error {
 	t.Root, err = makeLeaf()
 	if err != nil {
 		return err
@@ -101,7 +101,7 @@ func (t *Tree) startNewTree(key int, pointer *Record) error {
 	return nil
 }
 
-func contains(arrSearch []int, valSearch int) bool {
+func contains(arrSearch []float64, valSearch float64) bool {
 	for _, valIter := range arrSearch {
 		if valIter == valSearch {
 			return true

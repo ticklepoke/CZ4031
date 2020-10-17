@@ -30,7 +30,7 @@ func experiment1() {
 func experiment2(n int) (blockmanager.BlockManager, *bptree.Tree) {
 	fmt.Println("================= Experiment 2 =================")
 	t := bptree.NewTree(n)
-	rows := tsvparser.ParseTSV("./data.tsv")
+	rows := tsvparser.ParseTSV("../../data.tsv")
 
 	b := blockmanager.InitializeBlockManager(100)
 	i := 0
@@ -41,7 +41,7 @@ func experiment2(n int) (blockmanager.BlockManager, *bptree.Tree) {
 		tconsts, rating, votes := s[0], s[1], s[2]
 		key, _ := strconv.ParseFloat(rating, 64)
 		addr := b.InsertRecord(tconsts, rating, votes)
-		t.Insert(int(key*10), addr)
+		t.Insert(key, addr)
 		i++
 	}
 
@@ -55,20 +55,20 @@ func experiment2(n int) (blockmanager.BlockManager, *bptree.Tree) {
 
 func experiment3(t *bptree.Tree) {
 	fmt.Println("================= Experiment 3 =================")
-	t.FindAndPrint(80, true)
+	t.FindAndPrint(8.0, true)
 }
 
 func experiment4(t *bptree.Tree) {
 	fmt.Println("================= Experiment 4 =================")
-	t.FindAndPrintRange(70, 90, true)
+	t.FindAndPrintRange(7.0, 9.0, true)
 }
 
 func experiment5(b blockmanager.BlockManager, t *bptree.Tree) {
 	fmt.Println("================= Experiment 5 =================")
 	start := time.Now()
-	recPtrs, _ := t.Find(70, false)
+	recPtrs, _ := t.Find(7.0, false)
 	t.PrintTree()
-	t.Delete(70)
+	t.Delete(7.0)
 	t.PrintTree()
 	t.PrintHeight()
 	t.PrintLeaves()

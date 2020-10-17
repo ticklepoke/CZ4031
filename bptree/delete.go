@@ -3,12 +3,11 @@ package bptree
 import (
 	"fmt"
 	"reflect"
-	"strconv"
 )
 
 // Delete - implement deletion logic for node w/o parent pointers
-func (t *Tree) Delete(key int) error {
-	fmt.Println("Deleting node: " + strconv.Itoa(key))
+func (t *Tree) Delete(key float64) error {
+	fmt.Println("Deleting node: " + fmt.Sprintf("%f", key))
 	keyRecords, err := t.Find(key, false)
 	if err != nil {
 		return err
@@ -33,7 +32,7 @@ func getNeighbourIndex(n *Node) int {
 	return i
 }
 
-func removeEntryFromNode(n *Node, key int, pointer interface{}) *Node {
+func removeEntryFromNode(n *Node, key float64, pointer interface{}) *Node {
 	var i, num_pointers int
 
 	for n.Keys[i] != key {
@@ -91,7 +90,7 @@ func (t *Tree) adjustRoot() {
 	return
 }
 
-func (t *Tree) coalesceNodes(n, neighbour *Node, neighbour_index, k_prime int) {
+func (t *Tree) coalesceNodes(n, neighbour *Node, neighbour_index int, k_prime float64) {
 	// combine two nodes
 	var i, j, neighbour_insertion_index, n_end int
 	var tmp *Node
@@ -137,7 +136,7 @@ func (t *Tree) coalesceNodes(n, neighbour *Node, neighbour_index, k_prime int) {
 	t.deleteEntry(n.Parent, k_prime, n)
 }
 
-func (t *Tree) redistributeNodes(n, neighbour *Node, neighbour_index, k_prime_index, k_prime int) {
+func (t *Tree) redistributeNodes(n, neighbour *Node, neighbour_index, k_prime_index int, k_prime float64) {
 	var i int
 	var tmp *Node
 
@@ -188,8 +187,9 @@ func (t *Tree) redistributeNodes(n, neighbour *Node, neighbour_index, k_prime_in
 	return
 }
 
-func (t *Tree) deleteEntry(n *Node, key int, pointer interface{}) {
-	var min_keys, neighbour_index, k_prime_index, k_prime, capacity int
+func (t *Tree) deleteEntry(n *Node, key float64, pointer interface{}) {
+	var min_keys, neighbour_index, k_prime_index, capacity int
+	var k_prime float64
 	var neighbour *Node
 
 	n = removeEntryFromNode(n, key, pointer)
@@ -229,8 +229,7 @@ func (t *Tree) deleteEntry(n *Node, key int, pointer interface{}) {
 	if neighbour.NumKeys+n.NumKeys <= capacity {
 		t.coalesceNodes(n, neighbour, neighbour_index, k_prime)
 		return
-	} else {
-		t.redistributeNodes(n, neighbour, neighbour_index, k_prime_index, k_prime)
-		return
 	}
+	t.redistributeNodes(n, neighbour, neighbour_index, k_prime_index, k_prime)
+	return
 }

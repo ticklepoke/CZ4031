@@ -8,7 +8,7 @@ import (
 )
 
 // Find the records for a given key
-func (t *Tree) Find(key int, verbose bool) ([]*Record, error) {
+func (t *Tree) Find(key float64, verbose bool) ([]*Record, error) {
 	i := 0
 	c := t.findLeaf(key, verbose)
 	if c == nil {
@@ -31,23 +31,23 @@ func (t *Tree) Find(key int, verbose bool) ([]*Record, error) {
 }
 
 // FindAndPrint returns void
-func (t *Tree) FindAndPrint(key int, verbose bool) {
+func (t *Tree) FindAndPrint(key float64, verbose bool) {
 	r, err := t.Find(key, verbose)
 
 	// TODO: have to traverse linked list and print out
 	if err != nil || r == nil {
-		fmt.Printf("Record not found under key %d.\n", key)
+		fmt.Printf("Record not found under key %f.\n", key)
 	} else {
 		for _, recordPtr := range r {
-			fmt.Printf("Record at %p -- key %d, value %s.\n", recordPtr, key, recordPtr.Value)
+			fmt.Printf("Record at %p -- key %f, value %s.\n", recordPtr, key, recordPtr.Value)
 		}
 	}
 }
 
 // FindAndPrintRange returns void
-func (t *Tree) FindAndPrintRange(keyStart, keyEnd int, verbose bool) {
+func (t *Tree) FindAndPrintRange(keyStart, keyEnd float64, verbose bool) {
 	var i int
-	returnedKeys := make([]int, 0)
+	returnedKeys := make([]float64, 0)
 	returnedPointers := make([]interface{}, 0)
 	numFound := t.findRange(keyStart, keyEnd, verbose, &returnedKeys, &returnedPointers)
 	if numFound == 0 {
@@ -55,7 +55,7 @@ func (t *Tree) FindAndPrintRange(keyStart, keyEnd int, verbose bool) {
 	} else {
 		for i = 0; i < numFound; i++ {
 			c, _ := returnedPointers[i].(*Record)
-			fmt.Printf("Key: %d  Location: %p ",
+			fmt.Printf("Key: %f  Location: %p ",
 				returnedKeys[i],
 				returnedPointers[i])
 			blockmanager.PrintRecord(c.Value)
@@ -65,7 +65,7 @@ func (t *Tree) FindAndPrintRange(keyStart, keyEnd int, verbose bool) {
 
 /* ============================ Private Methods ============================*/
 
-func (t *Tree) findRange(keyStart, keyEnd int, verbose bool, returnedKeys *[]int, returnedPointers *[]interface{}) int {
+func (t *Tree) findRange(keyStart, keyEnd float64, verbose bool, returnedKeys *[]float64, returnedPointers *[]interface{}) int {
 	var i, left_bound int
 	numFound := 0
 
@@ -99,7 +99,7 @@ func (t *Tree) findRange(keyStart, keyEnd int, verbose bool, returnedKeys *[]int
 }
 
 // TODO: modify to traverse and find all the same keys
-func (t *Tree) findLeaf(key int, verbose bool) *Node {
+func (t *Tree) findLeaf(key float64, verbose bool) *Node {
 	i := 0
 	c := t.Root
 
@@ -115,9 +115,9 @@ func (t *Tree) findLeaf(key int, verbose bool) *Node {
 		if verbose {
 			fmt.Printf("[")
 			for i = 0; i < c.NumKeys-1; i++ {
-				fmt.Printf("%d ", c.Keys[i])
+				fmt.Printf("%f ", c.Keys[i])
 			}
-			fmt.Printf("%d]", c.Keys[i])
+			fmt.Printf("%f]", c.Keys[i])
 		}
 		i = 0
 		for i < c.NumKeys {
@@ -137,9 +137,9 @@ func (t *Tree) findLeaf(key int, verbose bool) *Node {
 	if verbose {
 		fmt.Printf("Leaf [")
 		for i = 0; i < c.NumKeys-1; i++ {
-			fmt.Printf("%d ", c.Keys[i])
+			fmt.Printf("%f ", c.Keys[i])
 		}
-		fmt.Printf("%d] ->\n", c.Keys[i])
+		fmt.Printf("%f] ->\n", c.Keys[i])
 	}
 	return c
 }

@@ -36,7 +36,7 @@ func (t *Tree) PrintTree() {
 				if verbose_output {
 					fmt.Printf("%d ", n.Pointers[i])
 				}
-				fmt.Printf("%d ", n.Keys[i])
+				fmt.Printf("%.1f ", n.Keys[i])
 			}
 			if !n.IsLeaf {
 				for i = 0; i <= n.NumKeys; i++ {
@@ -82,7 +82,7 @@ func (t *Tree) PrintLeaves() {
 			if verbose_output {
 				fmt.Printf("%d ", c.Pointers[i])
 			}
-			fmt.Printf("%d ", c.Keys[i])
+			fmt.Printf("%.1f ", c.Keys[i])
 		}
 		if verbose_output {
 			fmt.Printf("%d ", c.Pointers[N-1])

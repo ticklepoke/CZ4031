@@ -33,7 +33,7 @@ func main() {
 	// 17  | 25  |
 	// 1 7 10  | 17 19  | 20 21  | 25 31  |
 
-	arr := []int{1, 4, 7, 10, 17, 21, 31, 25, 19, 20, 5}
+	arr := []float64{1, 4, 7, 10, 17, 21, 31, 25, 19, 20, 5}
 	for _, num := range arr {
 		temp := strconv.Itoa(num)
 		addr := b.InsertRecord(temp, temp, temp)
