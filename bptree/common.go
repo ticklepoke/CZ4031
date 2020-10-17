@@ -19,8 +19,9 @@ type Tree struct {
 
 // Record serialize and unserialize function / library
 type Record struct {
-	Value *[]byte
-	Next  *Record
+	Value    *[]byte
+	Next     *Record
+	Previous *Record
 }
 
 // block manager struct
