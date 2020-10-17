@@ -1,12 +1,10 @@
-package main
+package experiment
 
 import (
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/ticklepoke/CZ4031/bptree"
-	"github.com/ticklepoke/CZ4031/tsvparser"
 )
 
 /* Delete those movies with the attribute “averageRating” equal to 7, update the B+ tree accordingly, and report the following statistics:
@@ -16,17 +14,7 @@ import (
 - the root node and its child nodes of the updated B+ tree;
 */
 
-func main() {
-	start := time.Now()
-	n := 5
-	t := bptree.NewTree(n)
-	rows := tsvparser.ParseTSV("../data.tsv")
-
-	for _, s := range rows {
-		tconsts, ratingString, votes := s[0], s[1], s[2]
-		rating, _ := strconv.Atoi(ratingString)
-		t.Insert(rating, []byte(tconsts+votes))
-	}
+func experiment5(t *bptree.Tree) {
 	t.Delete(7)
 	t.PrintTree()
 	t.PrintHeight()

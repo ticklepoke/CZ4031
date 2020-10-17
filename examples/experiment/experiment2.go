@@ -1,18 +1,15 @@
-package main
+package experiment
 
 import (
 	"fmt"
 	"strconv"
-	"time"
 
 	"github.com/ticklepoke/CZ4031/blockmanager"
 	"github.com/ticklepoke/CZ4031/bptree"
 	"github.com/ticklepoke/CZ4031/tsvparser"
 )
 
-func main() {
-	start := time.Now()
-	n := 5
+func experiment2(n int) *bptree.Tree {
 	t := bptree.NewTree(n)
 	rows := tsvparser.ParseTSV("../../data.tsv")
 
@@ -31,7 +28,5 @@ func main() {
 	// t.PrintHeight()
 	t.PrintTree()
 	b.DisplayStatus(false)
-
-	elapse := time.Since(start)
-	fmt.Println("Experiment 2 elapsed time: ", elapse)
+	return t
 }
