@@ -127,7 +127,7 @@ func (t *Tree) coalesceNodes(n, neighbour *Node, neighbour_index, k_prime int) {
 		i = neighbour_insertion_index
 		for j = 0; j < n.NumKeys; j++ {
 			neighbour.Keys[i] = n.Keys[j]
-			n.Pointers[i] = n.Pointers[j]
+			neighbour.Pointers[i] = n.Pointers[j]
 			neighbour.NumKeys++
 			i++
 		}

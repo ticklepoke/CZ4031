@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/ticklepoke/CZ4031/blockmanager"
 	"github.com/ticklepoke/CZ4031/bptree"
 )
 
 func main() {
 
 	t := bptree.NewTree(4)
+	b := blockmanager.InitializeBlockManager(100)
 
 	// Insertion example
 	// 1, 4, 7, 10, 17, 21, 31, 25, 19, 20, 28, 42
@@ -33,23 +35,26 @@ func main() {
 
 	arr := []int{1, 4, 7, 10, 17, 21, 31, 25, 19, 20, 5}
 	for _, num := range arr {
-		err := t.Insert(num, []byte("hello friend"+strconv.Itoa(num)))
+		temp := strconv.Itoa(num)
+		addr := b.InsertRecord(temp, temp, temp)
+		err := t.Insert(num, addr)
 		if err != nil {
 			fmt.Printf("error: %s\n\n", err)
 		}
 	}
 
 	t.PrintTree()
-	// t.FindAndPrint(42, false)
-	// t.FindAndPrint(4, false)
-	// t.FindAndPrint(21, false)
 
-	fmt.Println("Deleting 5")
-	t.Delete(5)
+	fmt.Println("Deleting 17")
+	t.Delete(17)
 	t.PrintTree()
 
-	fmt.Println("Deleting 4")
-	t.Delete(4)
+	fmt.Println("Deleting 19")
+	t.Delete(19)
+	t.PrintTree()
+
+	fmt.Println("Deleting 19")
+	t.Delete(7)
 	t.PrintTree()
 
 	// b := blockmanager.InitializeBlockManager(100)
