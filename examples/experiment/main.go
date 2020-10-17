@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strconv"
 	"time"
-	"unsafe"
 
 	"github.com/ticklepoke/CZ4031/blockmanager"
 	"github.com/ticklepoke/CZ4031/bptree"
@@ -74,9 +73,9 @@ func experiment5(b blockmanager.BlockManager, t *bptree.Tree) {
 	t.PrintLeaves()
 
 	for _, recPtr := range recPtrs {
-		b.DeleteRecord((*[]byte)(unsafe.Pointer(recPtr)))
+		b.DeleteRecord(recPtr.Value)
 	}
-
+	b.DisplayStatus(true)
 	elapse := time.Since(start)
 	fmt.Println("Experiment 5 elapsed time: ", elapse)
 }
