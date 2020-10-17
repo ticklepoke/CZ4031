@@ -30,12 +30,13 @@ type Record struct {
 
 // Node represents a B+ tree node
 type Node struct {
-	Pointers []interface{}
-	Keys     []int
-	Parent   *Node
-	IsLeaf   bool
-	NumKeys  int
-	Next     *Node
+	Pointers     []interface{}
+	TailPointers []interface{}
+	Keys         []int
+	Parent       *Node
+	IsLeaf       bool
+	NumKeys      int
+	Next         *Node
 }
 
 // NewTree Constructor with Order
@@ -66,6 +67,7 @@ func makeNode() (*Node, error) {
 		return nil, errors.New("Error: New node keys array")
 	}
 	newNode.Pointers = make([]interface{}, N)
+	newNode.TailPointers = make([]interface{}, N)
 	if newNode.Keys == nil {
 		return nil, errors.New("Error: New node pointers array")
 	}
@@ -92,6 +94,7 @@ func (t *Tree) startNewTree(key int, pointer *Record) error {
 	}
 	t.Root.Keys[0] = key
 	t.Root.Pointers[0] = pointer
+	t.Root.TailPointers[0] = pointer
 	t.Root.Pointers[N-1] = nil
 	t.Root.Parent = nil
 	t.Root.NumKeys++

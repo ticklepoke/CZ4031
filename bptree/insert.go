@@ -2,6 +2,7 @@ package bptree
 
 import (
 	"errors"
+	"fmt"
 )
 
 // Insert - implement duplicate key insertion functionality
@@ -62,14 +63,19 @@ func insertIntoLeaf(leaf *Node, key int, pointer *Record) {
 	if leaf.Keys[insertionPoint] == key {
 		curr := leaf.Pointers[insertionPoint]
 		if curr == nil {
+			fmt.Println("no record")
 			// no records yet
 			leaf.Pointers[insertionPoint] = pointer
+			leaf.TailPointers[insertionPoint] = pointer
 			return
 		} else {
 			// get last leaf node
-			var nodes []*Record = iterLeafLL(curr.(*Record))
-			lastRecNode := nodes[len(nodes)-1]
-			lastRecNode.Next = pointer
+			// var nodes []*Record = iterLeafLL(curr.(*Record))
+			// lastRecNode := nodes[len(nodes)-1]
+			// lastRecNode.Next = pointer
+			prev := leaf.TailPointers[insertionPoint].(*Record)
+			prev.Next = pointer
+			leaf.TailPointers[insertionPoint] = pointer
 			return
 		}
 	}
@@ -78,14 +84,15 @@ func insertIntoLeaf(leaf *Node, key int, pointer *Record) {
 	for i = leaf.NumKeys; i > insertionPoint; i-- {
 		leaf.Keys[i] = leaf.Keys[i-1]
 		leaf.Pointers[i] = leaf.Pointers[i-1]
+		leaf.TailPointers[i] = leaf.TailPointers[i-1]
 	}
 	leaf.Keys[insertionPoint] = key
 	leaf.Pointers[insertionPoint] = pointer
+	leaf.TailPointers[insertionPoint] = pointer
 	leaf.NumKeys++
 	return
 }
 
-// implement binsearch
 func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record) error {
 	var newLeaf *Node
 	var split, newKey, i, j int
@@ -102,6 +109,8 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record
 	// }
 
 	tempPointers := make([]interface{}, N)
+	tempTailPointers := make([]interface{}, N)
+
 	// if tempPointers == nil {
 	// 	return errors.New("error: Temporary pointers array")
 	// }
@@ -116,11 +125,13 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record
 		}
 		tempKeys[j] = leaf.Keys[i]
 		tempPointers[j] = leaf.Pointers[i]
+		tempTailPointers[j] = leaf.TailPointers[i]
 		j++
 	}
 
 	tempKeys[insertionIndex] = key
 	tempPointers[insertionIndex] = pointer
+	tempTailPointers[insertionIndex] = pointer // TODO: this might be wrong
 
 	leaf.NumKeys = 0
 
@@ -129,6 +140,7 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record
 	// could just make use of copy to do this
 	for i = 0; i < split; i++ {
 		leaf.Pointers[i] = tempPointers[i]
+		leaf.TailPointers[i] = tempTailPointers[i]
 		leaf.Keys[i] = tempKeys[i]
 		leaf.NumKeys++
 	}
@@ -136,6 +148,7 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record
 	j = 0
 	for i = split; i < N; i++ {
 		newLeaf.Pointers[j] = tempPointers[i]
+		newLeaf.TailPointers[j] = tempTailPointers[j]
 		newLeaf.Keys[j] = tempKeys[i]
 		newLeaf.NumKeys++
 		j++
@@ -149,9 +162,11 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record
 	// set the indices after insertion point to nil
 	for i = leaf.NumKeys; i < N-1; i++ {
 		leaf.Pointers[i] = nil
+		leaf.TailPointers[i] = nil
 	}
 	for i = newLeaf.NumKeys; i < N-1; i++ {
 		newLeaf.Pointers[i] = nil
+		newLeaf.TailPointers[i] = nil
 	}
 
 	// point to the left for dup keys

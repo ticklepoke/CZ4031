@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/ticklepoke/CZ4031/blockmanager"
 	"github.com/ticklepoke/CZ4031/bptree"
@@ -30,11 +31,11 @@ func experiment2(n int) *bptree.Tree {
 
 	b := blockmanager.InitializeBlockManager(100)
 
-	for _, s := range rows[:100] {
+	for _, s := range rows {
 		tconsts, rating, votes := s[0], s[1], s[2]
 		key, _ := strconv.ParseFloat(rating, 64)
 		addr := b.InsertRecord(tconsts, rating, votes)
-		fmt.Println(tconsts)
+		fmt.Println(tconsts, key)
 		t.Insert(int(key*10), addr)
 	}
 
@@ -59,6 +60,9 @@ func experiment5(t *bptree.Tree) {
 	t.PrintTree()
 	t.PrintHeight()
 	t.PrintLeaves()
+
+	elapse := time.Since(start)
+	fmt.Println("Experiment 5 elapsed time: ", elapse)
 }
 
 func main() {
