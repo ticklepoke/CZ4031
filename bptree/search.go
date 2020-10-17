@@ -3,6 +3,8 @@ package bptree
 import (
 	"errors"
 	"fmt"
+
+	"github.com/ticklepoke/CZ4031/blockmanager"
 )
 
 // Find the records for a given key
@@ -45,51 +47,52 @@ func (t *Tree) FindAndPrint(key int, verbose bool) {
 // FindAndPrintRange returns void
 func (t *Tree) FindAndPrintRange(keyStart, keyEnd int, verbose bool) {
 	var i int
-	arraySize := keyEnd - keyStart + 1
-	returnedKeys := make([]int, arraySize)
+	returnedKeys := make([]int, 0)
 	returnedPointers := make([]interface{}, 0)
-	numFound := t.findRange(keyStart, keyEnd, verbose, returnedKeys, returnedPointers)
+	numFound := t.findRange(keyStart, keyEnd, verbose, &returnedKeys, &returnedPointers)
 	if numFound == 0 {
 		fmt.Println("none found")
 	} else {
 		for i = 0; i < numFound; i++ {
 			c, _ := returnedPointers[i].(*Record)
-			fmt.Printf("Key: %d  Location: %d  Value: %s\n",
+			fmt.Printf("Key: %d  Location: %p ",
 				returnedKeys[i],
-				returnedPointers[i],
-				c.Value)
+				returnedPointers[i])
+			blockmanager.PrintRecord(c.Value)
 		}
 	}
 }
 
 /* ============================ Private Methods ============================*/
 
-func (t *Tree) findRange(keyStart, keyEnd int, verbose bool, returnedKeys []int, returnedPointers []interface{}) int {
-	var i int
+func (t *Tree) findRange(keyStart, keyEnd int, verbose bool, returnedKeys *[]int, returnedPointers *[]interface{}) int {
+	var i, left_bound int
 	numFound := 0
 
-	n := t.findLeaf(keyStart, verbose)
+	n := t.FindLeaf(keyStart, verbose)
 	if n == nil {
 		return 0
 	}
-	for i = 0; i < n.NumKeys && n.Keys[i] < keyStart; i++ {
-		if i == n.NumKeys { // could be wrong
+	for left_bound = 0; left_bound < n.NumKeys && n.Keys[left_bound] < keyStart; left_bound++ {
+		if left_bound == n.NumKeys { // could be wrong
 			return 0
 		}
 	}
-	for n != nil {
-		// for i = i; i < n.NumKeys && n.Keys[i] <= keyEnd; i++ {
-		for i = 0; i < n.NumKeys && n.Keys[i] <= keyEnd; i++ {
-			returnedKeys[numFound] = n.Keys[i]
+	t.PrintTree()
+	for n != nil { // traverse right
+		for i = left_bound; i < n.NumKeys && n.Keys[i] <= keyEnd; i++ {
 			curr := n.Pointers[i]
 			var recordPtrs []*Record = iterLeafLL(curr.(*Record))
 
 			for _, recPtr := range recordPtrs {
-				returnedPointers[numFound] = recPtr
+				// returnedPointers[numFound] = recPtr
+				*returnedPointers = append(*returnedPointers, recPtr)
+				*returnedKeys = append(*returnedKeys, n.Keys[i])
 				numFound++
 			}
 		}
-		n, _ = n.Pointers[N-1].(*Node) //go to the next leaf node
+		// n = n.Next //go to the next leaf node
+		n, _ = n.Pointers[N-1].(*Node)
 		i = 0
 	}
 	return numFound

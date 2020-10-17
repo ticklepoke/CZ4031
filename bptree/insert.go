@@ -154,11 +154,8 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key int, pointer *Record
 		j++
 	}
 
-	// newLeaf.Pointers[N-1] = leaf.Pointers[N-1]
-	// leaf.Pointers[N-1] = []*Record{newLeaf}
-	newLeaf.Next = leaf.Next
-	leaf.Next = newLeaf.Next
-
+	newLeaf.Pointers[N-1] = leaf.Pointers[N-1]
+	leaf.Pointers[N-1] = newLeaf
 	// set the indices after insertion point to nil
 	for i = leaf.NumKeys; i < N-1; i++ {
 		leaf.Pointers[i] = nil
