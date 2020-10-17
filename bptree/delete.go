@@ -1,11 +1,14 @@
 package bptree
 
 import (
+	"fmt"
 	"reflect"
+	"strconv"
 )
 
 // Delete - implement deletion logic for node w/o parent pointers
 func (t *Tree) Delete(key int) error {
+	fmt.Println("Deleting node: " + strconv.Itoa(key))
 	keyRecords, err := t.Find(key, false)
 	if err != nil {
 		return err
@@ -103,15 +106,15 @@ func (t *Tree) coalesceNodes(n, neighbour *Node, neighbour_index, k_prime int) {
 
 	if !n.IsLeaf {
 		neighbour.Keys[neighbour_insertion_index] = k_prime
-		neighbour.NumKeys += 1
+		neighbour.NumKeys++
 
 		n_end = n.NumKeys
 		i = neighbour_insertion_index + 1
 		for j = 0; j < n_end; j++ {
 			neighbour.Keys[i] = n.Keys[j]
 			neighbour.Pointers[i] = n.Pointers[j]
-			neighbour.NumKeys += 1
-			n.NumKeys -= 1
+			neighbour.NumKeys++
+			n.NumKeys--
 			i++
 		}
 		neighbour.Pointers[i] = n.Pointers[j]
@@ -179,8 +182,8 @@ func (t *Tree) redistributeNodes(n, neighbour *Node, neighbour_index, k_prime_in
 			neighbour.Pointers[i] = neighbour.Pointers[i+1]
 		}
 	}
-	n.NumKeys += 1
-	neighbour.NumKeys -= 1
+	n.NumKeys++
+	neighbour.NumKeys--
 
 	return
 }
