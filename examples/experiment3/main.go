@@ -1,13 +1,16 @@
 package main
 
 import (
+	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/ticklepoke/CZ4031/bptree"
 	"github.com/ticklepoke/CZ4031/tsvparser"
 )
 
 func main() {
+	start := time.Now()
 	n := 5
 	t := bptree.NewTree(n)
 	rows := tsvparser.ParseTSV("../../data.tsv")
@@ -19,4 +22,7 @@ func main() {
 	}
 
 	t.FindAndPrint(8, true)
+
+	elapse := time.Since(start)
+	fmt.Println("Experiment 3 elapsed time: ", elapse)
 }
