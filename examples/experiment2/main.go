@@ -13,7 +13,7 @@ import (
 func main() {
 	n := 5
 	t := bptree.NewTree(n)
-	rows := tsvparser.ParseTSV("data.tsv")
+	rows := tsvparser.ParseTSV("../../data.tsv")
 
 	b := blockmanager.InitializeBlockManager(100)
 
