@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"time"
+	"unsafe"
 
 	"github.com/ticklepoke/CZ4031/blockmanager"
 	"github.com/ticklepoke/CZ4031/bptree"
@@ -29,15 +30,19 @@ func experiment1() {
 func experiment2(n int) (blockmanager.BlockManager, *bptree.Tree) {
 	fmt.Println("================= Experiment 2 =================")
 	t := bptree.NewTree(n)
-	rows := tsvparser.ParseTSV("../../data.tsv")
+	rows := tsvparser.ParseTSV("./data.tsv")
 
 	b := blockmanager.InitializeBlockManager(100)
-
+	i := 0
 	for _, s := range rows {
+		if i == 1000 {
+			break
+		}
 		tconsts, rating, votes := s[0], s[1], s[2]
 		key, _ := strconv.ParseFloat(rating, 64)
 		addr := b.InsertRecord(tconsts, rating, votes)
 		t.Insert(int(key*10), addr)
+		i++
 	}
 
 	// t.PrintOrder()
@@ -61,10 +66,16 @@ func experiment4(t *bptree.Tree) {
 func experiment5(b blockmanager.BlockManager, t *bptree.Tree) {
 	fmt.Println("================= Experiment 5 =================")
 	start := time.Now()
-	t.Delete(7)
+	recPtrs, _ := t.Find(70, false)
+	t.PrintTree()
+	t.Delete(70)
 	t.PrintTree()
 	t.PrintHeight()
 	t.PrintLeaves()
+
+	for _, recPtr := range recPtrs {
+		b.DeleteRecord((*[]byte)(unsafe.Pointer(recPtr)))
+	}
 
 	elapse := time.Since(start)
 	fmt.Println("Experiment 5 elapsed time: ", elapse)
