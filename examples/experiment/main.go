@@ -73,7 +73,6 @@ func experiment5(b blockmanager.BlockManager, t *bptree.Tree) {
 		b.DeleteRecord((*[]byte)(unsafe.Pointer(recPtr)))
 	}
 
-	b.DisplayStatus(true)
 	elapse := time.Since(start)
 	fmt.Println("Experiment 5 elapsed time: ", elapse)
 }
