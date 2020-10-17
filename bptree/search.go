@@ -24,7 +24,6 @@ func (t *Tree) Find(key int, verbose bool) ([]*Record, error) {
 	}
 
 	curr := c.Pointers[i].(*Record)
-	fmt.Printf("%v", c.Pointers)
 	var recordsArr []*Record = iterLeafLL(curr)
 	return recordsArr, nil
 }

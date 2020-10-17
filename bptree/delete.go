@@ -37,10 +37,10 @@ func removeEntryFromNode(n *Node, key int, pointer interface{}) *Node {
 	var i, num_pointers int
 
 	for n.Keys[i] != key {
-		i += 1
+		i++
 	}
 	// i is the index of the key
-	for i += 1; i < n.NumKeys; i++ {
+	for i++; i < n.NumKeys; i++ {
 		n.Keys[i-1] = n.Keys[i]
 	}
 
@@ -52,12 +52,12 @@ func removeEntryFromNode(n *Node, key int, pointer interface{}) *Node {
 
 	i = 0
 	for n.Pointers[i] != pointer {
-		i += 1
+		i++
 	}
 	for i += 1; i < num_pointers; i++ {
 		n.Pointers[i-1] = n.Pointers[i]
 	}
-	n.NumKeys -= 1
+	n.NumKeys--
 
 	if n.IsLeaf {
 		for i = n.NumKeys; i < N-1; i++ {
