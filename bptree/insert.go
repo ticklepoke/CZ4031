@@ -7,11 +7,12 @@ import (
 
 // Insert - implement duplicate key insertion functionality
 // create new node w/o parent pointer (point to the left)
-func (t *Tree) Insert(key float64, addr *[]byte) error {
+func (t *Tree) Insert(key float64, tconsts, rating, votes string) error {
 	var pointer *Record
 	var leaf *Node
 
 	// Inserting a new key
+	addr := t.BlckMngr.InsertRecord(tconsts, rating, votes)
 	pointer = &Record{Value: addr}
 	// pointer, err := makeRecord(value)
 	// if err != nil {
