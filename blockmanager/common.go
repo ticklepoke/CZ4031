@@ -25,7 +25,6 @@ type BlockManager struct {
 	numRecords   int
 	blocks       []*[]byte
 	blockSet     map[unsafe.Pointer]bool
-	numAccessed  int
 	hasCapacity  bool
 	currentCount int
 
