@@ -1,5 +1,9 @@
 package blockmanager
 
+import (
+	"unsafe"
+)
+
 const (
 	// RECORDSIZE - number of bytes in a Record
 	// longest character length for the following fields
@@ -20,6 +24,7 @@ type BlockManager struct {
 	numBlocks    int
 	numRecords   int
 	blocks       []*[]byte
+	blockSet     map[unsafe.Pointer]bool
 	hasCapacity  bool
 	currentCount int
 
@@ -38,7 +43,7 @@ type (
 // InitializeBlockManager - create new blockmanager instance
 // with specified block size
 func InitializeBlockManager(size int) BlockManager {
-	b := BlockManager{numBlocks: 0, BLOCKSIZE: size}
+	b := BlockManager{numBlocks: 0, BLOCKSIZE: size, blockSet: make(map[unsafe.Pointer]bool)}
 	return b
 }
 
@@ -46,6 +51,7 @@ func (b *BlockManager) createBlock() []byte {
 	b.numBlocks++
 	newBlock := make([]byte, b.BLOCKSIZE, b.BLOCKSIZE)
 	b.blocks = append(b.blocks, &newBlock)
+	b.blockSet[unsafe.Pointer(&newBlock)] = false
 	b.hasCapacity = true
 	b.currentCount = 0
 

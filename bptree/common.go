@@ -1,6 +1,10 @@
 package bptree
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/ticklepoke/CZ4031/blockmanager"
+)
 
 var (
 	err error
@@ -14,7 +18,8 @@ var (
 
 // Tree is a B+ Tree
 type Tree struct {
-	Root *Node
+	Root     *Node
+	BlckMngr *blockmanager.BlockManager
 }
 
 // Record serialize and unserialize function / library
@@ -42,7 +47,8 @@ type Node struct {
 // NewTree Constructor with Order
 func NewTree(n int) *Tree {
 	N = n
-	return &Tree{}
+	b := blockmanager.InitializeBlockManager(100)
+	return &Tree{BlckMngr: &b}
 }
 
 // call block manager

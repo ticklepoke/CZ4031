@@ -40,6 +40,9 @@ func (t *Tree) FindAndPrint(key float64, verbose bool) {
 	} else {
 		for _, recordPtr := range r {
 			fmt.Printf("Record at %p -- key %f, value %s.\n", recordPtr, key, recordPtr.Value)
+			blockmanager.PrintRecord(recordPtr.Value)
+			fmt.Println()
+			t.BlckMngr.SetBlocksAccessed(recordPtr.Value)
 		}
 	}
 }
@@ -59,6 +62,7 @@ func (t *Tree) FindAndPrintRange(keyStart, keyEnd float64, verbose bool) {
 				returnedKeys[i],
 				returnedPointers[i])
 			blockmanager.PrintRecord(c.Value)
+			t.BlckMngr.SetBlocksAccessed(c.Value)
 		}
 	}
 }

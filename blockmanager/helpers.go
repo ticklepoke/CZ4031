@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"strconv"
+	"unsafe"
 )
 
 // DisplayStatus - get status of blockmanager and print the state of the
@@ -56,4 +57,42 @@ func (b BlockManager) printRecords(all bool) {
 		}
 	}
 	fmt.Println()
+}
+
+// SetBlocksAccessed - keeps track of the blocks that have been accessed during deletion and record retrieval
+func (b *BlockManager) SetBlocksAccessed(addr *[]byte) {
+	start := unsafe.Pointer(addr)
+	size := b.BLOCKSIZE
+
+	for i := 0; i < size/RECORDSIZE; i++ {
+		item := (unsafe.Pointer(uintptr(start) - uintptr(i*32)))
+		if visited, found := b.blockSet[item]; found && !visited {
+			b.blockSet[item] = true
+			break
+		}
+	}
+}
+
+// GetBlocksAccessed - prints the blocks accessed during deletion and record retrieval
+func (b BlockManager) GetBlocksAccessed() {
+	var count int
+	fmt.Println("=================\n blocks accessed\n=================")
+	for block, visited := range b.blockSet {
+		if visited {
+			count++
+			block := *(*[]byte)(block)
+			for j := 0; j < b.BLOCKSIZE/RECORDSIZE; j++ {
+				offset := j * RECORDSIZE
+
+				if bytes.Compare(block[offset:offset+RECORDSIZE], make([]byte, RECORDSIZE, RECORDSIZE)) == 0 {
+					continue
+				}
+
+				record := block[offset:]
+				PrintRecord(&record)
+			}
+			fmt.Println()
+		}
+	}
+	fmt.Printf("Num blocks accessed: %d \n", count)
 }
