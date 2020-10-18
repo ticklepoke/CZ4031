@@ -76,6 +76,7 @@ func (b *BlockManager) SetBlocksAccessed(addr *[]byte) {
 // GetBlocksAccessed - prints the blocks accessed during deletion and record retrieval
 func (b BlockManager) GetBlocksAccessed() {
 	var count int
+	fmt.Println("=================\n blocks accessed\n=================")
 	for block, visited := range b.blockSet {
 		if visited {
 			count++
