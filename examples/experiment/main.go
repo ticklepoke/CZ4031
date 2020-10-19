@@ -61,9 +61,9 @@ func experiment5(t *bptree.Tree) {
 	t.PrintTree()
 	t.Delete(7.0)
 	t.FindNumDeletions()
-	fmt.Println("B+ tree has height of", t.Height())
-	fmt.Println("Printing B+ tree structure")
-	fmt.Println()
+	logger.Logger.Println("B+ tree has height of", t.Height())
+	logger.Logger.Println("Printing B+ tree structure")
+	logger.Logger.Println()
 	t.PrintTree()
 	// t.PrintLeaves()
 
@@ -80,6 +80,6 @@ func main() {
 	n := 5
 	t := experiment1And2(n)
 	experiment3(t)
-	// experiment4(t)
-	// experiment5(t)
+	experiment4(t)
+	experiment5(t)
 }

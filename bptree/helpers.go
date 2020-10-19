@@ -166,5 +166,5 @@ func findMidPoint(length int) int {
 
 // FindNumDeletions - returns the number of nodes deleted
 func (t Tree) FindNumDeletions() {
-	fmt.Printf("Number of nodes deleted: %d\n", t.numDeletions)
+	logger.Logger.Printf("Number of nodes deleted: %d\n", t.numDeletions)
 }
