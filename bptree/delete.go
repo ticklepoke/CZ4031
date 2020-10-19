@@ -227,6 +227,7 @@ func (t *Tree) deleteEntry(n *Node, key float64, pointer interface{}) {
 	capacity = N - 1
 
 	if neighbour.NumKeys+n.NumKeys <= capacity {
+		t.numDeletions++
 		t.coalesceNodes(n, neighbour, neighbour_index, k_prime)
 		return
 	}
