@@ -25,7 +25,7 @@ func (t *Tree) PrintTree() {
 			if n.Parent != nil && n == n.Parent.Pointers[0] {
 				new_rank = t.pathToRoot(n)
 				if new_rank != rank {
-					fmt.Printf("\n")
+					fmt.Printf("\n\n")
 					rank = new_rank
 				}
 			}
@@ -55,7 +55,7 @@ func (t *Tree) PrintTree() {
 		}
 	}
 
-	fmt.Printf("\nNumber of Nodes: %v\n", numberOfNodes)
+	fmt.Printf("\nB+ Tree Number of Nodes: %v\n", numberOfNodes)
 	fmt.Printf("\n")
 }
 
@@ -143,9 +143,5 @@ func (t *Tree) pathToRoot(child *Node) int {
 
 // findMidPoint - return num keys needed during insertion and deletion
 func findMidPoint(length int) int {
-	if length%2 == 0 {
-		return length / 2
-	}
-
-	return length/2 + 1
+	return length / 2
 }

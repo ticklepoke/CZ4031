@@ -31,6 +31,7 @@ func experiment2(n int) *bptree.Tree {
 	t := bptree.NewTree(n)
 	rows := tsvparser.ParseTSV("../../data.tsv")
 
+	fmt.Println("B+ tree has parameter n of", n)
 	i := 0
 	for _, s := range rows {
 		if i == 1000 {
@@ -41,27 +42,25 @@ func experiment2(n int) *bptree.Tree {
 		t.Insert(key, tconsts, rating, votes)
 		i++
 	}
-
-	// t.PrintOrder()
-	// t.PrintLeaves()
-	// t.PrintHeight()
+	fmt.Println("B+ tree has height of", t.Height())
 	t.PrintTree()
-	t.BlckMngr.DisplayStatus(false)
 	return t
 }
 
 func experiment3(t *bptree.Tree) {
 	fmt.Println("================= Experiment 3 =================")
+	t.BlckMngr.ResetBlocksAccessed()
 	t.FindAndPrint(8.0, true)
 
-	// t.BlckMngr.GetBlocksAccessed()
+	t.BlckMngr.GetBlocksAccessed()
 }
 
 func experiment4(t *bptree.Tree) {
 	fmt.Println("================= Experiment 4 =================")
+	t.BlckMngr.ResetBlocksAccessed()
 	t.FindAndPrintRange(7.0, 9.0, true)
 
-	// t.BlckMngr.GetBlocksAccessed()
+	t.BlckMngr.GetBlocksAccessed()
 }
 
 func experiment5(t *bptree.Tree) {
