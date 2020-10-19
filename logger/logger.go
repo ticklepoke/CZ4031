@@ -9,8 +9,8 @@ import (
 // Logger - logger instance
 var Logger *log.Logger
 
-// InitlizeLogger - set log file path
-func InitlizeLogger(filename string) {
+// InitializeLogger - set log file path
+func InitializeLogger(filename string) {
 	path := "logs/" + filename + ".log"
 	openLogfile, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
