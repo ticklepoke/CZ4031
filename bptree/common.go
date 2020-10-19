@@ -46,9 +46,9 @@ type Node struct {
 }
 
 // NewTree Constructor with Order
-func NewTree(n int) *Tree {
+func NewTree(n, blocksize int) *Tree {
 	N = n
-	b := blockmanager.InitializeBlockManager(100)
+	b := blockmanager.InitializeBlockManager(blocksize)
 	return &Tree{BlckMngr: &b}
 }
 
