@@ -34,6 +34,7 @@ func (t *Tree) Find(key float64, verbose bool) ([]*Record, error) {
 func (t *Tree) FindAndPrint(key float64, verbose bool) {
 	r, err := t.Find(key, verbose)
 
+	fmt.Println("Printing the attribute tconst of the records that are returned")
 	// TODO: have to traverse linked list and print out
 	if err != nil || r == nil {
 		fmt.Printf("Record not found under key %f.\n", key)
@@ -117,6 +118,13 @@ func (t *Tree) findLeaf(key float64, verbose bool) *Node {
 	// traverse down the tree till reach leaf node
 	for !c.IsLeaf {
 		noOfIndexNodes++
+		if verbose {
+			fmt.Printf("Index node %d keys [", noOfIndexNodes)
+			for i = 0; i < c.NumKeys-1; i++ {
+				fmt.Printf("%f ", c.Keys[i])
+			}
+			fmt.Printf("%f]\n", c.Keys[i])
+		}
 		i = 0
 		for i < c.NumKeys {
 			if key >= c.Keys[i] {
@@ -128,9 +136,15 @@ func (t *Tree) findLeaf(key float64, verbose bool) *Node {
 		c, _ = c.Pointers[i].(*Node)
 	}
 
+	noOfIndexNodes++ // add one for child node
 	// TODO: modify c to factor in slice
 	if verbose {
-		fmt.Printf("Number of Index Nodes Accessed: %v\n", noOfIndexNodes)
+		fmt.Printf("Leaf Node %d [", noOfIndexNodes)
+		for i = 0; i < c.NumKeys-1; i++ {
+			fmt.Printf("%f ", c.Keys[i])
+		}
+		fmt.Printf("%f]\n\n", c.Keys[i])
+		fmt.Printf("Number of Index Nodes Accessed: %v\n\n", noOfIndexNodes)
 	}
 	return c
 }
