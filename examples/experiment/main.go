@@ -16,9 +16,6 @@ func experiment1And2(n int) *bptree.Tree {
 
 	i := 0
 	for _, s := range rows {
-		if i == 1000 {
-			break
-		}
 		tconsts, rating, votes := s[0], s[1], s[2]
 		key, _ := strconv.ParseFloat(rating, 64)
 		t.Insert(key, tconsts, rating, votes)
@@ -59,7 +56,9 @@ func experiment5(t *bptree.Tree) {
 	t.PrintTree()
 	t.Delete(7.0)
 	t.FindNumDeletions()
-	t.PrintHeight()
+	fmt.Println("B+ tree has height of", t.Height())
+	fmt.Println("Printing B+ tree structure")
+	fmt.Println()
 	t.PrintTree()
 	// t.PrintLeaves()
 
@@ -77,5 +76,5 @@ func main() {
 	t := experiment1And2(n)
 	experiment3(t)
 	experiment4(t)
-	// experiment5(t)
+	experiment5(t)
 }
