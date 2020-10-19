@@ -39,7 +39,7 @@ func (t *Tree) FindAndPrint(key float64, verbose bool) {
 		fmt.Printf("Record not found under key %f.\n", key)
 	} else {
 		for _, recordPtr := range r {
-			fmt.Printf("Record at %p -- key %f, value %s.\n", recordPtr, key, recordPtr.Value)
+			fmt.Printf("Record -- key %f, ", key)
 			blockmanager.PrintRecord(recordPtr.Value)
 			fmt.Println()
 			t.BlckMngr.SetBlocksAccessed(recordPtr.Value)
@@ -117,13 +117,6 @@ func (t *Tree) findLeaf(key float64, verbose bool) *Node {
 	// traverse down the tree till reach leaf node
 	for !c.IsLeaf {
 		noOfIndexNodes++
-		if verbose {
-			fmt.Printf("[")
-			for i = 0; i < c.NumKeys-1; i++ {
-				fmt.Printf("%f ", c.Keys[i])
-			}
-			fmt.Printf("%f]", c.Keys[i])
-		}
 		i = 0
 		for i < c.NumKeys {
 			if key >= c.Keys[i] {
@@ -132,19 +125,11 @@ func (t *Tree) findLeaf(key float64, verbose bool) *Node {
 				break
 			}
 		}
-		if verbose {
-			fmt.Printf("%d ->\n", i)
-		}
 		c, _ = c.Pointers[i].(*Node)
 	}
 
 	// TODO: modify c to factor in slice
 	if verbose {
-		fmt.Printf("Leaf [")
-		for i = 0; i < c.NumKeys-1; i++ {
-			fmt.Printf("%f ", c.Keys[i])
-		}
-		fmt.Printf("%f] ->\n", c.Keys[i])
 		fmt.Printf("Number of Index Nodes Accessed: %v\n", noOfIndexNodes)
 	}
 	return c

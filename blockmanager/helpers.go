@@ -32,7 +32,7 @@ func PrintRecord(recAddr *[]byte) {
 	rating := string((*recAddr)[RATINGOFFSET:VOTESOFFSET])
 	votes := string((*recAddr)[VOTESOFFSET:RECORDSIZE])
 
-	fmt.Printf("id: %s, average rating: %s, number of votes: %s \n", tconst, rating, votes)
+	fmt.Printf("tconst: %s, average rating: %s, number of votes: %s \n", tconst, rating, votes)
 }
 
 // printRecords - prints all records in the database
