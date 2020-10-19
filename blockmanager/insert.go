@@ -40,8 +40,8 @@ func (b *BlockManager) insertToBlock(newRecord Record) *[]byte {
 func makeRecord(tconst string, avgRating string, numVotes string) Record {
 	val := make([]byte, RECORDSIZE, RECORDSIZE)
 	copy(val, []byte(tconst))
-	copy(val[10:], []byte(avgRating))
-	copy(val[13:], []byte(numVotes))
+	copy(val[RATINGOFFSET:], []byte(avgRating))
+	copy(val[VOTESOFFSET:], []byte(numVotes))
 
 	return val
 }
