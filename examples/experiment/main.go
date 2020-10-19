@@ -11,7 +11,7 @@ import (
 
 func experiment1And2(n int) *bptree.Tree {
 	fmt.Println("================= Experiment 1 =================")
-	t := bptree.NewTree(n)
+	t := bptree.NewTree(n, 100)
 	rows := tsvparser.ParseTSV("../../data.tsv")
 
 	i := 0
