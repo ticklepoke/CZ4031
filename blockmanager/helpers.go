@@ -5,14 +5,16 @@ import (
 	"fmt"
 	"strconv"
 	"unsafe"
+
+	"github.com/ticklepoke/CZ4031/logger"
 )
 
 // DisplayStatus - get status of blockmanager and print the state of the
 // current block
 func (b BlockManager) DisplayStatus(verbose bool) {
 	numBlocks, numRecords := b.numBlocks, b.numRecords
-	fmt.Printf("num blocks:\t%s\n", strconv.Itoa(numBlocks))
-	fmt.Printf("num records:\t%s\n", strconv.Itoa(numRecords))
+	logger.Logger.Printf("num blocks:\t%s\n", strconv.Itoa(numBlocks))
+	logger.Logger.Printf("num records:\t%s\n", strconv.Itoa(numRecords))
 
 	if verbose {
 		fmt.Printf("current count:\t%s\n", strconv.Itoa(b.currentCount))
@@ -22,17 +24,17 @@ func (b BlockManager) DisplayStatus(verbose bool) {
 		fmt.Println("deleted records:", b.markedDeleted)
 		// fmt.Println("byte block:", b.blocks[b.numBlocks-1])
 	}
-	fmt.Println()
+	logger.Logger.Println()
 	b.printRecords(verbose)
 }
 
 // PrintRecord - parses and prints bytes slice at record address
 func PrintRecord(recAddr *[]byte) {
-	tconst := string((*recAddr)[:RATINGOFFSET])
-	rating := string((*recAddr)[RATINGOFFSET:VOTESOFFSET])
-	votes := string((*recAddr)[VOTESOFFSET:RECORDSIZE])
+	tconst := string(bytes.Trim((*recAddr)[:RATINGOFFSET], "\x00"))
+	rating := string(bytes.Trim((*recAddr)[RATINGOFFSET:VOTESOFFSET], "\x00"))
+	votes := string(bytes.Trim((*recAddr)[VOTESOFFSET:RECORDSIZE], "\x00"))
 
-	fmt.Printf("tconst: %s, average rating: %s, number of votes: %s \n", tconst, rating, votes)
+	logger.Logger.Printf("tconst: %s, average rating: %s, number of votes: %s \n", tconst, rating, votes)
 }
 
 // printRecords - prints all records in the database
@@ -56,7 +58,7 @@ func (b BlockManager) printRecords(all bool) {
 			PrintRecord(&record)
 		}
 	}
-	fmt.Println()
+	logger.Logger.Println()
 }
 
 // SetBlocksAccessed - keeps track of the blocks that have been accessed during deletion and record retrieval
@@ -78,7 +80,9 @@ func (b *BlockManager) SetBlocksAccessed(addr *[]byte) {
 // GetBlocksAccessed - prints the blocks accessed during deletion and record retrieval
 func (b BlockManager) GetBlocksAccessed() {
 	var count int
-	fmt.Println("=================\n blocks accessed\n=================")
+	logger.Logger.Println("=================")
+	logger.Logger.Println(" blocks accessed ")
+	logger.Logger.Println("=================")
 	for block, visited := range b.blockSet {
 		if visited {
 			count++
@@ -93,10 +97,10 @@ func (b BlockManager) GetBlocksAccessed() {
 				record := block[offset:]
 				PrintRecord(&record)
 			}
-			fmt.Println()
+			logger.Logger.Println()
 		}
 	}
-	fmt.Printf("Num blocks accessed: %d \n", count)
+	logger.Logger.Printf("Num blocks accessed: %d \n", count)
 }
 
 // ResetBlocksAccessed - resets accessed blocks map

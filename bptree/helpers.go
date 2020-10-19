@@ -2,10 +2,21 @@ package bptree
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
 	"strconv"
+
+	"github.com/ticklepoke/CZ4031/logger"
 )
 
 func (t *Tree) PrintTree() {
+
+	// create temp buffer to store traversal results
+	// helps formatting in the logger
+	stdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
 	var n *Node
 	numberOfNodes := 0
 	i := 0
@@ -54,9 +65,14 @@ func (t *Tree) PrintTree() {
 			fmt.Printf(" | ")
 		}
 	}
-	fmt.Printf("\n")
-	fmt.Printf("\nB+ Tree Number of Nodes: %v\n", numberOfNodes)
-	fmt.Printf("\n")
+	logger.Logger.Printf("B+ Tree Number of Nodes: %v", numberOfNodes)
+
+	// close temp buffer and output result to log
+	w.Close()
+	out, _ := ioutil.ReadAll(r)
+	os.Stdout = stdout
+
+	logger.Logger.Printf("BPTree: \n%s", out)
 }
 
 // PrintHeight prints the height of the tree

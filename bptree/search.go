@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/ticklepoke/CZ4031/logger"
+
 	"github.com/ticklepoke/CZ4031/blockmanager"
 )
 
@@ -36,15 +38,15 @@ func (t *Tree) Find(key float64, verbose bool) ([]*Record, error) {
 func (t *Tree) FindAndPrint(key float64, verbose bool) {
 	r, err := t.Find(key, verbose)
 
-	fmt.Println("Printing the attribute tconst of the records that are returned")
+	logger.Logger.Println("Printing the attribute tconst of the records that are returned")
 	// TODO: have to traverse linked list and print out
 	if err != nil || r == nil {
 		fmt.Printf("Record not found under key %f.\n", key)
 	} else {
 		for _, recordPtr := range r {
-			fmt.Printf("Record -- key %f, ", key)
+			logger.Logger.Printf("Record -- key %f, ", key)
 			blockmanager.PrintRecord(recordPtr.Value)
-			fmt.Println()
+			logger.Logger.Println()
 			t.BlckMngr.SetBlocksAccessed(recordPtr.Value)
 		}
 	}
@@ -124,13 +126,27 @@ func (t *Tree) findLeaf(key float64, verbose bool) (*Node, int) {
 	noOfIndexNodes := 0
 	// traverse down the tree till reach leaf node
 	for !c.IsLeaf {
+
 		noOfIndexNodes++
 		if verbose {
+			// TODO
+			// create temp buffer to store results
+			// helps formatting in the logger
+			// stdout := os.Stdout
+			// r, w, _ := os.Pipe()
+			// os.Stdout = w
+
 			fmt.Printf("Index node %d keys [", noOfIndexNodes)
 			for i = 0; i < c.NumKeys-1; i++ {
 				fmt.Printf("%f ", c.Keys[i])
 			}
-			fmt.Printf("%f]\n", c.Keys[i])
+			fmt.Printf("%f]", c.Keys[i])
+
+			// close temp buffer and output result to log
+			// w.Close()
+			// out, _ := ioutil.ReadAll(r)
+			// os.Stdout = stdout
+			// logger.Logger.Println(out)
 		}
 		i = 0
 		for i < c.NumKeys {
