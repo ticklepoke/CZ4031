@@ -61,7 +61,7 @@ func (t *Tree) PrintTree() {
 
 // PrintHeight prints the height of the tree
 func (t *Tree) PrintHeight() {
-	fmt.Printf("Height: %v", strconv.Itoa(t.Height()))
+	fmt.Printf("Height: %v\n", strconv.Itoa(t.Height()))
 }
 
 // PrintLeaves print leaves
@@ -70,6 +70,8 @@ func (t *Tree) PrintLeaves() {
 		fmt.Printf("Empty tree.\n")
 		return
 	}
+
+	fmt.Print("Leave nodes: ")
 
 	var i int
 	c := t.Root
@@ -148,4 +150,9 @@ func findMidPoint(length int) int {
 	}
 
 	return length/2 + 1
+}
+
+// FindNumDeletions - returns the number of nodes deleted
+func (t Tree) FindNumDeletions() {
+	fmt.Printf("Number of nodes deleted: %d\n", t.numDeletions)
 }
