@@ -247,7 +247,7 @@ func (t *Tree) insertIntoNodeAfterSplitting(oldNode *Node, leftIndex int, key fl
 
 	j = 0
 	// for i += 1; i < N; i++ {
-	for i += 1; i < N; i++ {
+	for i++; i < N; i++ {
 		newNode.Pointers[j] = tempPointers[i]
 		newNode.Keys[j] = tempKeys[i]
 		newNode.NumKeys++
