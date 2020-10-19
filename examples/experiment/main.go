@@ -43,6 +43,9 @@ func experiment2(n int) *bptree.Tree {
 		i++
 	}
 	fmt.Println("B+ tree has height of", t.Height())
+	fmt.Println()
+	fmt.Println("Printing B+ tree structure")
+	fmt.Println()
 	t.PrintTree()
 	return t
 }

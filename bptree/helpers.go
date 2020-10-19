@@ -54,7 +54,7 @@ func (t *Tree) PrintTree() {
 			fmt.Printf(" | ")
 		}
 	}
-
+	fmt.Printf("\n")
 	fmt.Printf("\nB+ Tree Number of Nodes: %v\n", numberOfNodes)
 	fmt.Printf("\n")
 }
