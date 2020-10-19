@@ -33,8 +33,6 @@ This package requires [golang](https://golang.org/) to run. After installing gol
 This install the local Go project and run the experiments
 
 ~~~
-go get -u 
-
 cd examples/experiment && go run ./main.go
 ~~~
 
