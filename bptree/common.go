@@ -18,8 +18,9 @@ var (
 
 // Tree is a B+ Tree
 type Tree struct {
-	Root     *Node
-	BlckMngr *blockmanager.BlockManager
+	Root         *Node
+	BlckMngr     *blockmanager.BlockManager
+	numDeletions int
 }
 
 // Record serialize and unserialize function / library
