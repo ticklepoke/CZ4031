@@ -64,6 +64,8 @@ func (b *BlockManager) SetBlocksAccessed(addr *[]byte) {
 	start := unsafe.Pointer(addr)
 	size := b.BLOCKSIZE
 
+	// use offsets to check which block the record belongs to
+	// this works as the records have a fixed size
 	for i := 0; i < size/RECORDSIZE; i++ {
 		item := (unsafe.Pointer(uintptr(start) - uintptr(i*32)))
 		if visited, found := b.blockSet[item]; found && !visited {
@@ -95,4 +97,11 @@ func (b BlockManager) GetBlocksAccessed() {
 		}
 	}
 	fmt.Printf("Num blocks accessed: %d \n", count)
+}
+
+// ResetBlocksAccessed - resets accessed blocks map
+func (b *BlockManager) ResetBlocksAccessed() {
+	for k := range b.blockSet {
+		b.blockSet[k] = false
+	}
 }

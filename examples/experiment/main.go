@@ -52,16 +52,18 @@ func experiment2(n int) *bptree.Tree {
 
 func experiment3(t *bptree.Tree) {
 	fmt.Println("================= Experiment 3 =================")
+	t.BlckMngr.ResetBlocksAccessed()
 	t.FindAndPrint(8.0, true)
 
-	// t.BlckMngr.GetBlocksAccessed()
+	t.BlckMngr.GetBlocksAccessed()
 }
 
 func experiment4(t *bptree.Tree) {
 	fmt.Println("================= Experiment 4 =================")
+	t.BlckMngr.ResetBlocksAccessed()
 	t.FindAndPrintRange(7.0, 9.0, true)
 
-	// t.BlckMngr.GetBlocksAccessed()
+	t.BlckMngr.GetBlocksAccessed()
 }
 
 func experiment5(t *bptree.Tree) {
