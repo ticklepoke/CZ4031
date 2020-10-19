@@ -23,7 +23,7 @@ func (t *Tree) Insert(key float64, tconsts, rating, votes string) error {
 		return t.startNewTree(key, pointer)
 	}
 
-	leaf = t.findLeaf(key, false)
+	leaf, _ = t.findLeaf(key, false)
 
 	// if leaf node contains the key we want we can just insert to leaf node
 	if leaf.NumKeys < N-1 || contains(leaf.Keys, key) {

@@ -12,7 +12,7 @@ func (t *Tree) Delete(key float64) error {
 	if err != nil {
 		return err
 	}
-	keyLeaf := t.findLeaf(key, false) // TODO: this becomes a slice of leaf nodes
+	keyLeaf, _ := t.findLeaf(key, false) // TODO: this becomes a slice of leaf nodes
 	if len(keyRecords) != 0 && keyLeaf != nil {
 		keyRecordHead := keyRecords[0]
 		t.deleteEntry(keyLeaf, key, keyRecordHead)

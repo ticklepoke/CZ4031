@@ -10,7 +10,9 @@ import (
 // Find the records for a given key
 func (t *Tree) Find(key float64, verbose bool) ([]*Record, error) {
 	i := 0
-	c := t.findLeaf(key, verbose)
+	c, numIndexNodes := t.findLeaf(key, verbose)
+	fmt.Println("Number of Index Nodes Accessed: ", numIndexNodes)
+	fmt.Println()
 	if c == nil {
 		return nil, errors.New("key not found")
 	}
@@ -54,14 +56,14 @@ func (t *Tree) FindAndPrintRange(keyStart, keyEnd float64, verbose bool) {
 	returnedKeys := make([]float64, 0)
 	returnedPointers := make([]interface{}, 0)
 	numFound := t.findRange(keyStart, keyEnd, verbose, &returnedKeys, &returnedPointers)
+	fmt.Println("Printing the attribute tconst of the records that are returned")
 	if numFound == 0 {
 		fmt.Println("none found")
 	} else {
 		for i = 0; i < numFound; i++ {
 			c, _ := returnedPointers[i].(*Record)
-			fmt.Printf("Key: %f  Location: %p ",
-				returnedKeys[i],
-				returnedPointers[i])
+			fmt.Printf("Key: %f ",
+				returnedKeys[i])
 			blockmanager.PrintRecord(c.Value)
 			t.BlckMngr.SetBlocksAccessed(c.Value)
 		}
@@ -71,10 +73,10 @@ func (t *Tree) FindAndPrintRange(keyStart, keyEnd float64, verbose bool) {
 /* ============================ Private Methods ============================*/
 
 func (t *Tree) findRange(keyStart, keyEnd float64, verbose bool, returnedKeys *[]float64, returnedPointers *[]interface{}) int {
-	var i, left_bound int
+	var i, left_bound, numIndexNodes int
 	numFound := 0
 
-	n := t.findLeaf(keyStart, verbose)
+	n, numIndexNodes := t.findLeaf(keyStart, verbose)
 	if n == nil {
 		return 0
 	}
@@ -83,7 +85,6 @@ func (t *Tree) findRange(keyStart, keyEnd float64, verbose bool, returnedKeys *[
 			return 0
 		}
 	}
-	t.PrintTree()
 	for n != nil { // traverse right
 		for i = left_bound; i < n.NumKeys && n.Keys[i] <= keyEnd; i++ {
 			curr := n.Pointers[i]
@@ -99,12 +100,18 @@ func (t *Tree) findRange(keyStart, keyEnd float64, verbose bool, returnedKeys *[
 		// n = n.Next //go to the next leaf node
 		n, _ = n.Pointers[N-1].(*Node)
 		i = 0
+		numIndexNodes++
+		if n != nil {
+			fmt.Printf("Leaf Node %d %f\n", numIndexNodes, n.Keys[:n.NumKeys])
+		}
 	}
+	numIndexNodes-- //prevent double counting of the first leaf node
+	fmt.Printf("Number of Index Nodes Accessed: %v\n\n", numIndexNodes)
 	return numFound
 }
 
 // TODO: modify to traverse and find all the same keys
-func (t *Tree) findLeaf(key float64, verbose bool) *Node {
+func (t *Tree) findLeaf(key float64, verbose bool) (*Node, int) {
 	i := 0
 	c := t.Root
 
@@ -112,7 +119,7 @@ func (t *Tree) findLeaf(key float64, verbose bool) *Node {
 		if verbose {
 			fmt.Printf("Empty tree.\n")
 		}
-		return c
+		return c, 0
 	}
 	noOfIndexNodes := 0
 	// traverse down the tree till reach leaf node
@@ -143,8 +150,7 @@ func (t *Tree) findLeaf(key float64, verbose bool) *Node {
 		for i = 0; i < c.NumKeys-1; i++ {
 			fmt.Printf("%f ", c.Keys[i])
 		}
-		fmt.Printf("%f]\n\n", c.Keys[i])
-		fmt.Printf("Number of Index Nodes Accessed: %v\n\n", noOfIndexNodes)
+		fmt.Printf("%f]\n", c.Keys[i])
 	}
-	return c
+	return c, noOfIndexNodes
 }

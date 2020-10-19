@@ -76,6 +76,6 @@ func main() {
 	n := 5
 	t := experiment1And2(n)
 	experiment3(t)
-	// experiment4(t)
+	experiment4(t)
 	// experiment5(t)
 }
