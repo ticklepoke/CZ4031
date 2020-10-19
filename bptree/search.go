@@ -3,6 +3,10 @@ package bptree
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"os"
+
+	"github.com/ticklepoke/CZ4031/logger"
 
 	"github.com/ticklepoke/CZ4031/blockmanager"
 )
@@ -11,8 +15,8 @@ import (
 func (t *Tree) Find(key float64, verbose bool) ([]*Record, error) {
 	i := 0
 	c, numIndexNodes := t.findLeaf(key, verbose)
-	fmt.Println("Number of Index Nodes Accessed: ", numIndexNodes)
-	fmt.Println()
+	logger.Logger.Println("Number of Index Nodes Accessed: ", numIndexNodes)
+	logger.Logger.Println()
 	if c == nil {
 		return nil, errors.New("key not found")
 	}
@@ -36,15 +40,15 @@ func (t *Tree) Find(key float64, verbose bool) ([]*Record, error) {
 func (t *Tree) FindAndPrint(key float64, verbose bool) {
 	r, err := t.Find(key, verbose)
 
-	fmt.Println("Printing the attribute tconst of the records that are returned")
+	logger.Logger.Println("Printing the attribute tconst of the records that are returned")
 	// TODO: have to traverse linked list and print out
 	if err != nil || r == nil {
 		fmt.Printf("Record not found under key %f.\n", key)
 	} else {
 		for _, recordPtr := range r {
-			fmt.Printf("Record -- key %f, ", key)
+			logger.Logger.Printf("Record -- key %f, ", key)
 			blockmanager.PrintRecord(recordPtr.Value)
-			fmt.Println()
+			logger.Logger.Println()
 			t.BlckMngr.SetBlocksAccessed(recordPtr.Value)
 		}
 	}
@@ -56,13 +60,13 @@ func (t *Tree) FindAndPrintRange(keyStart, keyEnd float64, verbose bool) {
 	returnedKeys := make([]float64, 0)
 	returnedPointers := make([]interface{}, 0)
 	numFound := t.findRange(keyStart, keyEnd, verbose, &returnedKeys, &returnedPointers)
-	fmt.Println("Printing the attribute tconst of the records that are returned")
+	logger.Logger.Println("Printing the attribute tconst of the records that are returned")
 	if numFound == 0 {
-		fmt.Println("none found")
+		logger.Logger.Println("none found")
 	} else {
 		for i = 0; i < numFound; i++ {
 			c, _ := returnedPointers[i].(*Record)
-			fmt.Printf("Key: %f ",
+			logger.Logger.Printf("Key: %f ",
 				returnedKeys[i])
 			blockmanager.PrintRecord(c.Value)
 			t.BlckMngr.SetBlocksAccessed(c.Value)
@@ -102,11 +106,11 @@ func (t *Tree) findRange(keyStart, keyEnd float64, verbose bool, returnedKeys *[
 		i = 0
 		numIndexNodes++
 		if n != nil {
-			fmt.Printf("Leaf Node %d %f\n", numIndexNodes, n.Keys[:n.NumKeys])
+			logger.Logger.Printf("Leaf Node %d %f\n", numIndexNodes, n.Keys[:n.NumKeys])
 		}
 	}
 	numIndexNodes-- //prevent double counting of the first leaf node
-	fmt.Printf("Number of Index Nodes Accessed: %v\n\n", numIndexNodes)
+	logger.Logger.Printf("Number of Index Nodes Accessed: %v\n\n", numIndexNodes)
 	return numFound
 }
 
@@ -124,13 +128,26 @@ func (t *Tree) findLeaf(key float64, verbose bool) (*Node, int) {
 	noOfIndexNodes := 0
 	// traverse down the tree till reach leaf node
 	for !c.IsLeaf {
+
 		noOfIndexNodes++
 		if verbose {
+			// create temp buffer to store results
+			// helps formatting in the logger
+			stdout := os.Stdout
+			r, w, _ := os.Pipe()
+			os.Stdout = w
+
 			fmt.Printf("Index node %d keys [", noOfIndexNodes)
 			for i = 0; i < c.NumKeys-1; i++ {
 				fmt.Printf("%f ", c.Keys[i])
 			}
-			fmt.Printf("%f]\n", c.Keys[i])
+			fmt.Printf("%f]", c.Keys[i])
+
+			// close temp buffer and output result to log
+			w.Close()
+			out, _ := ioutil.ReadAll(r)
+			os.Stdout = stdout
+			logger.Logger.Println(out)
 		}
 		i = 0
 		for i < c.NumKeys {
@@ -146,11 +163,23 @@ func (t *Tree) findLeaf(key float64, verbose bool) (*Node, int) {
 	noOfIndexNodes++ // add one for child node
 	// TODO: modify c to factor in slice
 	if verbose {
+		// create temp buffer to store results
+		// helps formatting in the logger
+		stdout := os.Stdout
+		r, w, _ := os.Pipe()
+		os.Stdout = w
+
 		fmt.Printf("Leaf Node %d [", noOfIndexNodes)
 		for i = 0; i < c.NumKeys-1; i++ {
 			fmt.Printf("%f ", c.Keys[i])
 		}
 		fmt.Printf("%f]\n", c.Keys[i])
+
+		// close temp buffer and output result to log
+		w.Close()
+		out, _ := ioutil.ReadAll(r)
+		os.Stdout = stdout
+		logger.Logger.Println(out)
 	}
 	return c, noOfIndexNodes
 }

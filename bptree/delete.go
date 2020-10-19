@@ -3,11 +3,13 @@ package bptree
 import (
 	"fmt"
 	"reflect"
+
+	"github.com/ticklepoke/CZ4031/logger"
 )
 
 // Delete - implement deletion logic for node w/o parent pointers
 func (t *Tree) Delete(key float64) error {
-	fmt.Println("Deleting node: " + fmt.Sprintf("%f", key))
+	logger.Logger.Println("Deleting node: " + fmt.Sprintf("%f", key))
 	keyRecords, err := t.Find(key, false)
 	if err != nil {
 		return err

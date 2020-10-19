@@ -5,14 +5,17 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/ticklepoke/CZ4031/logger"
+
 	"github.com/ticklepoke/CZ4031/bptree"
 	"github.com/ticklepoke/CZ4031/tsvparser"
 )
 
 func experiment1And2(n int) *bptree.Tree {
-	fmt.Println("================= Experiment 1 =================")
+	// fmt.Println("================= Experiment 1 =================")
 	t := bptree.NewTree(n, 100)
-	rows := tsvparser.ParseTSV("../../data.tsv")
+	rows := tsvparser.ParseTSV("data.tsv")
+	logger.InitializeLogger("experiment1")
 
 	i := 0
 	for _, s := range rows {
@@ -23,18 +26,18 @@ func experiment1And2(n int) *bptree.Tree {
 	}
 
 	t.BlckMngr.DisplayStatus(false)
-	fmt.Println("================= Experiment 2 =================")
-	fmt.Println("B+ tree has parameter n of", n)
-	fmt.Println("B+ tree has height of", t.Height())
-	fmt.Println()
-	fmt.Println("Printing B+ tree structure")
-	fmt.Println()
+	// fmt.Println("================= Experiment 2 =================")
+	logger.InitializeLogger("experiment2")
+	logger.Logger.Println("B+ tree has parameter n of", n)
+	logger.Logger.Println("B+ tree has height of", t.Height())
+	logger.Logger.Println("Printing B+ tree structure")
 	t.PrintTree()
 	return t
 }
 
 func experiment3(t *bptree.Tree) {
-	fmt.Println("================= Experiment 3 =================")
+	logger.InitializeLogger("experiment3")
+	// fmt.Println("================= Experiment 3 =================")
 	t.BlckMngr.ResetBlocksAccessed()
 	t.FindAndPrint(8.0, true)
 
@@ -42,7 +45,8 @@ func experiment3(t *bptree.Tree) {
 }
 
 func experiment4(t *bptree.Tree) {
-	fmt.Println("================= Experiment 4 =================")
+	// fmt.Println("================= Experiment 4 =================")
+	logger.InitializeLogger("experiment4")
 	t.BlckMngr.ResetBlocksAccessed()
 	t.FindAndPrintRange(7.0, 9.0, true)
 
@@ -50,15 +54,16 @@ func experiment4(t *bptree.Tree) {
 }
 
 func experiment5(t *bptree.Tree) {
-	fmt.Println("================= Experiment 5 =================")
+	// fmt.Println("================= Experiment 5 =================")
+	logger.InitializeLogger("experiment5")
 	start := time.Now()
 	recPtrs, _ := t.Find(7.0, false)
 	t.PrintTree()
 	t.Delete(7.0)
 	t.FindNumDeletions()
-	fmt.Println("B+ tree has height of", t.Height())
-	fmt.Println("Printing B+ tree structure")
-	fmt.Println()
+	logger.Logger.Println("B+ tree has height of", t.Height())
+	logger.Logger.Println("Printing B+ tree structure")
+	logger.Logger.Println()
 	t.PrintTree()
 	// t.PrintLeaves()
 
