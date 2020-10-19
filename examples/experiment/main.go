@@ -5,33 +5,15 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ticklepoke/CZ4031/blockmanager"
 	"github.com/ticklepoke/CZ4031/bptree"
 	"github.com/ticklepoke/CZ4031/tsvparser"
 )
 
-func experiment1() {
+func experiment1And2(n int) *bptree.Tree {
 	fmt.Println("================= Experiment 1 =================")
-	b := blockmanager.InitializeBlockManager(100)
-
-	rows := tsvparser.ParseTSV("../../data.tsv")
-
-	for _, row := range rows {
-		tconts, rating, votes := row[0], row[1], row[2]
-
-		// TODO: insert record to bptree
-		b.InsertRecord(tconts, rating, votes)
-	}
-
-	b.DisplayStatus(false)
-}
-
-func experiment2(n int) *bptree.Tree {
-	fmt.Println("================= Experiment 2 =================")
 	t := bptree.NewTree(n)
 	rows := tsvparser.ParseTSV("../../data.tsv")
 
-	fmt.Println("B+ tree has parameter n of", n)
 	i := 0
 	for _, s := range rows {
 		if i == 1000 {
@@ -42,6 +24,10 @@ func experiment2(n int) *bptree.Tree {
 		t.Insert(key, tconsts, rating, votes)
 		i++
 	}
+
+	t.BlckMngr.DisplayStatus(false)
+	fmt.Println("================= Experiment 2 =================")
+	fmt.Println("B+ tree has parameter n of", n)
 	fmt.Println("B+ tree has height of", t.Height())
 	fmt.Println()
 	fmt.Println("Printing B+ tree structure")
@@ -87,8 +73,7 @@ func experiment5(t *bptree.Tree) {
 
 func main() {
 	n := 5
-	// b := experiment1()
-	t := experiment2(n)
+	t := experiment1And2(n)
 	experiment3(t)
 	experiment4(t)
 	experiment5(t)
