@@ -113,9 +113,10 @@ func (t *Tree) findLeaf(key float64, verbose bool) *Node {
 		}
 		return c
 	}
-
+	noOfIndexNodes := 0
 	// traverse down the tree till reach leaf node
 	for !c.IsLeaf {
+		noOfIndexNodes++
 		if verbose {
 			fmt.Printf("[")
 			for i = 0; i < c.NumKeys-1; i++ {
@@ -144,6 +145,7 @@ func (t *Tree) findLeaf(key float64, verbose bool) *Node {
 			fmt.Printf("%f ", c.Keys[i])
 		}
 		fmt.Printf("%f] ->\n", c.Keys[i])
+		fmt.Printf("Number of Index Nodes Accessed: %v\n", noOfIndexNodes)
 	}
 	return c
 }
