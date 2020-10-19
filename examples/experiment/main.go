@@ -72,9 +72,10 @@ func experiment5(t *bptree.Tree) {
 	recPtrs, _ := t.Find(7.0, false)
 	t.PrintTree()
 	t.Delete(7.0)
-	t.PrintTree()
+	t.FindNumDeletions()
 	t.PrintHeight()
-	t.PrintLeaves()
+	t.PrintTree()
+	// t.PrintLeaves()
 
 	// TODO: add this into the DeleteRecord func
 	for _, recPtr := range recPtrs {
@@ -89,7 +90,7 @@ func main() {
 	n := 5
 	// b := experiment1()
 	t := experiment2(n)
-	experiment3(t)
-	experiment4(t)
+	// experiment3(t)
+	// experiment4(t)
 	experiment5(t)
 }
