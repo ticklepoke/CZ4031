@@ -133,6 +133,9 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key float64, pointer *Re
 
 	tempKeys[insertionIndex] = key
 	tempPointers[insertionIndex] = pointer
+	for pointer.Next != nil {
+		pointer = pointer.Next
+	}
 	tempTailPointers[insertionIndex] = pointer // TODO: this might be wrong
 
 	leaf.NumKeys = 0
@@ -150,7 +153,7 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key float64, pointer *Re
 	j = 0
 	for i = split; i < N; i++ {
 		newLeaf.Pointers[j] = tempPointers[i]
-		newLeaf.TailPointers[j] = tempTailPointers[j]
+		newLeaf.TailPointers[j] = tempTailPointers[i]
 		newLeaf.Keys[j] = tempKeys[i]
 		newLeaf.NumKeys++
 		j++

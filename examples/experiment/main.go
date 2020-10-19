@@ -14,7 +14,7 @@ func experiment1() {
 	fmt.Println("================= Experiment 1 =================")
 	b := blockmanager.InitializeBlockManager(100)
 
-	rows := tsvparser.ParseTSV("data.tsv")
+	rows := tsvparser.ParseTSV("../../data.tsv")
 
 	for _, row := range rows {
 		tconts, rating, votes := row[0], row[1], row[2]
@@ -29,7 +29,7 @@ func experiment1() {
 func experiment2(n int) *bptree.Tree {
 	fmt.Println("================= Experiment 2 =================")
 	t := bptree.NewTree(n)
-	rows := tsvparser.ParseTSV("data.tsv")
+	rows := tsvparser.ParseTSV("../../data.tsv")
 
 	i := 0
 	for _, s := range rows {
