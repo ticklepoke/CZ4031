@@ -91,8 +91,8 @@ func main() {
 	experiment4(t)
 	experiment5(t)
 
-	t = experiment1And2(n, 500)
-	experiment3(t)
-	experiment4(t)
-	experiment5(t)
+	c := experiment1And2(n, 500)
+	experiment3(c)
+	experiment4(c)
+	experiment5(c)
 }
