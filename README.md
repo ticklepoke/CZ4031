@@ -25,8 +25,15 @@ This repository contains the following package structure:
 - TsvParser
   - Utility package to read in sample data
 
+## Quick start
+In order to ease the testing of the code, we provided 3 ways of running the source code:
 
-### Quickstart
+1. Use go run and run the repo
+2. Run the windows executable
+3. Using docker container
+
+
+### Go run
 
 This package requires [golang](https://golang.org/) to run. After installing golang, we need to run the following commands:
 
@@ -36,6 +43,10 @@ go run ./examples/experiment/main.go
 ~~~
 
 After which we can check the logs at `/logs`
+
+### Windows executable
+
+We have also provided a windows executable. Just double click the exectuable to run it
 
 ### Docker build
 
