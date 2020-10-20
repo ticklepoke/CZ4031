@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"strconv"
-	"unsafe"
 
 	"github.com/ticklepoke/CZ4031/logger"
 )
@@ -63,18 +62,17 @@ func (b BlockManager) printRecords(all bool) {
 
 // SetBlocksAccessed - keeps track of the blocks that have been accessed during deletion and record retrieval
 func (b *BlockManager) SetBlocksAccessed(addr *[]byte) {
-	start := unsafe.Pointer(addr)
-	size := b.BLOCKSIZE
+	// start := unsafe.Pointer(addr)
+	// size := b.BLOCKSIZE
 
 	// use offsets to check which block the record belongs to
 	// this works as the records have a fixed size
-	for i := 0; i < size/RECORDSIZE; i++ {
-		item := (unsafe.Pointer(uintptr(start) - uintptr(i*32)))
-		if visited, found := b.blockSet[item]; found && !visited {
-			b.blockSet[item] = true
-			break
-		}
+	// for i := 0; i < size/RECORDSIZE; i++ {
+	// 	item := (unsafe.Pointer(uintptr(start) - uintptr(i*32)))
+	if block, found := b.blockSet[addr]; found && !b.visited[block] {
+		b.visited[block] = true
 	}
+	// }
 }
 
 // GetBlocksAccessed - prints the blocks accessed during deletion and record retrieval
@@ -83,18 +81,18 @@ func (b BlockManager) GetBlocksAccessed() {
 	logger.Logger.Println("=================")
 	logger.Logger.Println(" blocks accessed ")
 	logger.Logger.Println("=================")
-	for block, visited := range b.blockSet {
+	for block, visited := range b.visited {
 		if visited {
 			count++
-			block := *(*[]byte)(block)
+			// block := *(*[]byte)(block)
 			for j := 0; j < b.BLOCKSIZE/RECORDSIZE; j++ {
 				offset := j * RECORDSIZE
 
-				if bytes.Compare(block[offset:offset+RECORDSIZE], make([]byte, RECORDSIZE, RECORDSIZE)) == 0 {
+				if bytes.Compare((*block)[offset:offset+RECORDSIZE], make([]byte, RECORDSIZE, RECORDSIZE)) == 0 {
 					continue
 				}
 
-				record := block[offset:]
+				record := (*block)[offset:]
 				PrintRecord(&record)
 			}
 			logger.Logger.Println()
@@ -106,6 +104,6 @@ func (b BlockManager) GetBlocksAccessed() {
 // ResetBlocksAccessed - resets accessed blocks map
 func (b *BlockManager) ResetBlocksAccessed() {
 	for k := range b.blockSet {
-		b.blockSet[k] = false
+		b.visited[k] = false
 	}
 }

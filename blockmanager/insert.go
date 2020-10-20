@@ -15,6 +15,7 @@ func (b *BlockManager) InsertRecord(tconst string, avgRating string, numVotes st
 	}
 
 	b.numRecords++
+	b.blockSet[addr] = b.blocks[len(b.blocks)-1]
 	return addr
 }
 
