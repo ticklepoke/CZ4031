@@ -45,6 +45,7 @@ func (t *Tree) FindAndPrint(key float64, verbose bool) {
 	if err != nil || r == nil {
 		fmt.Printf("Record not found under key %f.\n", key)
 	} else {
+		logger.Logger.Printf("NUMBER OF RECORDS FOUND: %d", len(r))
 		for _, recordPtr := range r {
 			logger.Logger.Printf("Record -- key %f, ", key)
 			blockmanager.PrintRecord(recordPtr.Value)
@@ -64,6 +65,7 @@ func (t *Tree) FindAndPrintRange(keyStart, keyEnd float64, verbose bool) {
 	if numFound == 0 {
 		logger.Logger.Println("none found")
 	} else {
+		logger.Logger.Printf("NUMBER OF RECORDS FOUND: %d", numFound)
 		for i = 0; i < numFound; i++ {
 			c, _ := returnedPointers[i].(*Record)
 			logger.Logger.Printf("Key: %f ",
