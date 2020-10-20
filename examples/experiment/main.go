@@ -11,11 +11,17 @@ import (
 	"github.com/ticklepoke/CZ4031/tsvparser"
 )
 
-func experiment1And2(n int) *bptree.Tree {
-	fmt.Println("Running experiment 1")
-	t := bptree.NewTree(n, 100)
+var (
+	blockSize int
+)
+
+func experiment1And2(n, size int) *bptree.Tree {
+	blockSize = size
+	fmt.Printf("Running experiment 1 %dB\n", blockSize)
+	t := bptree.NewTree(n, blockSize)
 	rows := tsvparser.ParseTSV("data.tsv")
-	logger.InitializeLogger("experiment1")
+	loggername := "experiment1_" + strconv.Itoa(blockSize)
+	logger.InitializeLogger(loggername)
 
 	i := 0
 	for _, s := range rows {
@@ -26,8 +32,9 @@ func experiment1And2(n int) *bptree.Tree {
 	}
 
 	t.BlckMngr.DisplayStatus(false)
-	fmt.Println("Running experiment 2")
-	logger.InitializeLogger("experiment2")
+	fmt.Printf("Running experiment 2 %d\nB", blockSize)
+	loggername = "experiment2_" + strconv.Itoa(blockSize)
+	logger.InitializeLogger(loggername)
 	logger.Logger.Println("B+ tree has parameter n of", n)
 	logger.Logger.Println("B+ tree has height of", t.Height())
 	logger.Logger.Println("Printing B+ tree structure")
@@ -36,8 +43,9 @@ func experiment1And2(n int) *bptree.Tree {
 }
 
 func experiment3(t *bptree.Tree) {
-	fmt.Println("Running experiment 3")
-	logger.InitializeLogger("experiment3")
+	fmt.Printf("Running experiment 3 %dB\n", blockSize)
+	loggername := "experiment3_" + strconv.Itoa(blockSize)
+	logger.InitializeLogger(loggername)
 	t.BlckMngr.ResetBlocksAccessed()
 	t.FindAndPrint(8.0, true)
 
@@ -45,8 +53,9 @@ func experiment3(t *bptree.Tree) {
 }
 
 func experiment4(t *bptree.Tree) {
-	fmt.Println("Running experiment 4")
-	logger.InitializeLogger("experiment4")
+	fmt.Printf("Running experiment 4 %dB\n", blockSize)
+	loggername := "experiment4_" + strconv.Itoa(blockSize)
+	logger.InitializeLogger(loggername)
 	t.BlckMngr.ResetBlocksAccessed()
 	t.FindAndPrintRange(7.0, 9.0, true)
 
@@ -54,8 +63,9 @@ func experiment4(t *bptree.Tree) {
 }
 
 func experiment5(t *bptree.Tree) {
-	fmt.Println("Running experiment 5")
-	logger.InitializeLogger("experiment5")
+	fmt.Printf("Running experiment 5 %dB\n", blockSize)
+	loggername := "experiment5_" + strconv.Itoa(blockSize)
+	logger.InitializeLogger(loggername)
 	start := time.Now()
 	recPtrs, _ := t.Find(7.0, false)
 	t.PrintTree()
@@ -76,7 +86,12 @@ func experiment5(t *bptree.Tree) {
 
 func main() {
 	n := 5
-	t := experiment1And2(n)
+	t := experiment1And2(n, 100)
+	experiment3(t)
+	experiment4(t)
+	experiment5(t)
+
+	t = experiment1And2(n, 500)
 	experiment3(t)
 	experiment4(t)
 	experiment5(t)
