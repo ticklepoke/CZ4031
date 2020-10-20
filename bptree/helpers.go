@@ -72,7 +72,7 @@ func (t *Tree) PrintTree() {
 	out, _ := ioutil.ReadAll(r)
 	os.Stdout = stdout
 
-	logger.Logger.Printf("BPTree: \n%s", out)
+	logger.Logger.Printf("\n\n================\nBPTREE STRUCTURE\n================\n\n%s\n\n", out)
 }
 
 // PrintHeight prints the height of the tree
