@@ -3,8 +3,6 @@ package bptree
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
-	"os"
 
 	"github.com/ticklepoke/CZ4031/logger"
 
@@ -131,23 +129,7 @@ func (t *Tree) findLeaf(key float64, verbose bool) (*Node, int) {
 
 		noOfIndexNodes++
 		if verbose {
-			// create temp buffer to store results
-			// helps formatting in the logger
-			stdout := os.Stdout
-			r, w, _ := os.Pipe()
-			os.Stdout = w
-
-			fmt.Printf("Index node %d keys [", noOfIndexNodes)
-			for i = 0; i < c.NumKeys-1; i++ {
-				fmt.Printf("%f ", c.Keys[i])
-			}
-			fmt.Printf("%f]", c.Keys[i])
-
-			// close temp buffer and output result to log
-			w.Close()
-			out, _ := ioutil.ReadAll(r)
-			os.Stdout = stdout
-			logger.Logger.Println(out)
+			logger.Logger.Printf("Index Node %d [%f]\n", noOfIndexNodes, c.Keys[:c.NumKeys])
 		}
 		i = 0
 		for i < c.NumKeys {
@@ -163,23 +145,7 @@ func (t *Tree) findLeaf(key float64, verbose bool) (*Node, int) {
 	noOfIndexNodes++ // add one for child node
 	// TODO: modify c to factor in slice
 	if verbose {
-		// create temp buffer to store results
-		// helps formatting in the logger
-		stdout := os.Stdout
-		r, w, _ := os.Pipe()
-		os.Stdout = w
-
-		fmt.Printf("Leaf Node %d [", noOfIndexNodes)
-		for i = 0; i < c.NumKeys-1; i++ {
-			fmt.Printf("%f ", c.Keys[i])
-		}
-		fmt.Printf("%f]\n", c.Keys[i])
-
-		// close temp buffer and output result to log
-		w.Close()
-		out, _ := ioutil.ReadAll(r)
-		os.Stdout = stdout
-		logger.Logger.Println(out)
+		logger.Logger.Printf("Leaf Node %d [%f]\n", noOfIndexNodes, c.Keys[:c.NumKeys])
 	}
 	return c, noOfIndexNodes
 }
