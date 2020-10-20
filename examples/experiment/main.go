@@ -32,7 +32,7 @@ func experiment1And2(n, size int) *bptree.Tree {
 	}
 
 	t.BlckMngr.DisplayStatus(false)
-	fmt.Printf("Running experiment 2 %d\nB", blockSize)
+	fmt.Printf("Running experiment 2 %dB\n", blockSize)
 	loggername = "experiment2_" + strconv.Itoa(blockSize)
 	logger.InitializeLogger(loggername)
 	logger.Logger.Println("B+ tree has parameter n of", n)
