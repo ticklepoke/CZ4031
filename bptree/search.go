@@ -108,6 +108,8 @@ func (t *Tree) findRange(keyStart, keyEnd float64, verbose bool, returnedKeys *[
 		if n != nil {
 			logger.Logger.Printf("Leaf Node %d %f\n", numIndexNodes, n.Keys[:n.NumKeys])
 		}
+
+		left_bound = 0 // reset left bound to be zero so we track
 	}
 	numIndexNodes-- //prevent double counting of the first leaf node
 	logger.Logger.Printf("Number of Index Nodes Accessed: %v\n\n", numIndexNodes)
