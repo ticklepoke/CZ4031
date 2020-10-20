@@ -8,8 +8,6 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o ./examples/experiment/main ./examples/experiment/main.go
-
-WORKDIR /app/examples/experiment
+RUN go build -o ./main ./examples/experiment/main.go
 
 CMD ["./main"]

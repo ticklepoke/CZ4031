@@ -30,19 +30,24 @@ This repository contains the following package structure:
 
 This package requires [golang](https://golang.org/) to run. After installing golang, we need to run the following commands:
 
-This install the local Go project and run the experiments
-
+This install the local Go project and run the experiments. From the root directory run
 ~~~
-cd examples/experiment && go run ./main.go
+go run ./examples/experiment/main.go
 ~~~
 
+After which we can check the logs at `/logs`
 
-### Dockerbuild
+### Docker build
 
 We also provide a docker build to test run the experiments. To use the docker build, we need to have [docker](https://www.docker.com/products/docker-desktop) installed.
 
 From the root directory run:
 ~~~
 docker build -t golang-bptree .
-docker run golang-bptree
+docker run -v <your-path-to-logs-folder>:/app/logs/ golang-bptree 
+
+e.g.
+docker run -v /Users/anthonyfongkuoxin/Desktop/SCSE/CZ4031/logs:/app/logs/ golang-bptree 
 ~~~
+
+
