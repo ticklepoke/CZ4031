@@ -25,24 +25,40 @@ This repository contains the following package structure:
 - TsvParser
   - Utility package to read in sample data
 
+## Quick start
+In order to ease the testing of the code, we provided 3 ways of running the source code:
 
-### Quickstart
+1. Use go run and run the repo
+2. Run the windows executable
+3. Using docker container
+
+
+### Go run
 
 This package requires [golang](https://golang.org/) to run. After installing golang, we need to run the following commands:
 
-This install the local Go project and run the experiments
-
+This install the local Go project and run the experiments. From the root directory run
 ~~~
-cd examples/experiment && go run ./main.go
+go run ./examples/experiment/main.go
 ~~~
 
+After which we can check the logs at `/logs`
 
-### Dockerbuild
+### Windows executable
+
+We have also provided a windows executable. Just double click the exectuable to run it
+
+### Docker build
 
 We also provide a docker build to test run the experiments. To use the docker build, we need to have [docker](https://www.docker.com/products/docker-desktop) installed.
 
 From the root directory run:
 ~~~
 docker build -t golang-bptree .
-docker run golang-bptree
+docker run -v <your-path-to-logs-folder>:/app/logs/ golang-bptree 
+
+e.g.
+docker run -v /Users/anthonyfongkuoxin/Desktop/SCSE/CZ4031/logs:/app/logs/ golang-bptree 
 ~~~
+
+

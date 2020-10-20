@@ -12,7 +12,7 @@ import (
 )
 
 func experiment1And2(n int) *bptree.Tree {
-	// fmt.Println("================= Experiment 1 =================")
+	fmt.Println("Running experiment 1")
 	t := bptree.NewTree(n, 100)
 	rows := tsvparser.ParseTSV("data.tsv")
 	logger.InitializeLogger("experiment1")
@@ -26,7 +26,7 @@ func experiment1And2(n int) *bptree.Tree {
 	}
 
 	t.BlckMngr.DisplayStatus(false)
-	// fmt.Println("================= Experiment 2 =================")
+	fmt.Println("Running experiment 2")
 	logger.InitializeLogger("experiment2")
 	logger.Logger.Println("B+ tree has parameter n of", n)
 	logger.Logger.Println("B+ tree has height of", t.Height())
@@ -36,8 +36,8 @@ func experiment1And2(n int) *bptree.Tree {
 }
 
 func experiment3(t *bptree.Tree) {
+	fmt.Println("Running experiment 3")
 	logger.InitializeLogger("experiment3")
-	// fmt.Println("================= Experiment 3 =================")
 	t.BlckMngr.ResetBlocksAccessed()
 	t.FindAndPrint(8.0, true)
 
@@ -45,7 +45,7 @@ func experiment3(t *bptree.Tree) {
 }
 
 func experiment4(t *bptree.Tree) {
-	// fmt.Println("================= Experiment 4 =================")
+	fmt.Println("Running experiment 4")
 	logger.InitializeLogger("experiment4")
 	t.BlckMngr.ResetBlocksAccessed()
 	t.FindAndPrintRange(7.0, 9.0, true)
@@ -54,7 +54,7 @@ func experiment4(t *bptree.Tree) {
 }
 
 func experiment5(t *bptree.Tree) {
-	// fmt.Println("================= Experiment 5 =================")
+	fmt.Println("Running experiment 5")
 	logger.InitializeLogger("experiment5")
 	start := time.Now()
 	recPtrs, _ := t.Find(7.0, false)
@@ -65,9 +65,7 @@ func experiment5(t *bptree.Tree) {
 	logger.Logger.Println("Printing B+ tree structure")
 	logger.Logger.Println()
 	t.PrintTree()
-	// t.PrintLeaves()
 
-	// TODO: add this into the DeleteRecord func
 	for _, recPtr := range recPtrs {
 		t.BlckMngr.DeleteRecord(recPtr.Value)
 	}
