@@ -2,15 +2,16 @@ package logger
 
 import (
 	"fmt"
-	"log"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // Logger - logger instance
-var Logger *log.Logger
+var Logger = log.New()
 
-// InitializeLogger - set log file path
-func InitializeLogger(filename string) {
+// InitFileLogger - logs to file
+func InitFileLogger(filename string, level log.Level) {
 	path := "logs/" + filename + ".log"
 	openLogfile, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
@@ -18,9 +19,12 @@ func InitializeLogger(filename string) {
 		os.Exit(1)
 	}
 
-	Logger = log.New(openLogfile, filename+":\t", log.Ldate|log.Ltime|log.Lshortfile)
+	Logger.Out = openLogfile
+	Logger.Level = level
 }
 
-func InitStdoutLogger() {
-	Logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lshortfile)
+// InitLogger - logs to stdout
+func InitStdoutLogger(level log.Level) {
+	Logger.Out = os.Stdout
+	Logger.Level = level
 }
