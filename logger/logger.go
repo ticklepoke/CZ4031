@@ -20,3 +20,7 @@ func InitializeLogger(filename string) {
 
 	Logger = log.New(openLogfile, filename+":\t", log.Ldate|log.Ltime|log.Lshortfile)
 }
+
+func InitStdoutLogger() {
+	Logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lshortfile)
+}
