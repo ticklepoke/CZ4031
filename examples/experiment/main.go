@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"time"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/ticklepoke/CZ4031/logger"
 
 	"github.com/ticklepoke/CZ4031/bptree"
@@ -21,7 +22,7 @@ func experiment1And2(n, size int) *bptree.Tree {
 	t := bptree.NewTree(n, blockSize)
 	rows := tsvparser.ParseTSV("data.tsv")
 	loggername := "experiment1_" + strconv.Itoa(blockSize)
-	logger.InitializeLogger(loggername)
+	logger.InitFileLogger(loggername, log.WarnLevel)
 
 	i := 0
 	for _, s := range rows {
@@ -34,7 +35,7 @@ func experiment1And2(n, size int) *bptree.Tree {
 	t.BlckMngr.DisplayStatus(false)
 	fmt.Printf("Running experiment 2 %dB\n", blockSize)
 	loggername = "experiment2_" + strconv.Itoa(blockSize)
-	logger.InitializeLogger(loggername)
+	logger.InitFileLogger(loggername, log.WarnLevel)
 	logger.Logger.Println("B+ tree has parameter n of", n)
 	logger.Logger.Println("B+ tree has height of", t.Height())
 	logger.Logger.Println("Printing B+ tree structure")
@@ -45,7 +46,7 @@ func experiment1And2(n, size int) *bptree.Tree {
 func experiment3(t *bptree.Tree) {
 	fmt.Printf("Running experiment 3 %dB\n", blockSize)
 	loggername := "experiment3_" + strconv.Itoa(blockSize)
-	logger.InitializeLogger(loggername)
+	logger.InitFileLogger(loggername, log.WarnLevel)
 	t.BlckMngr.ResetBlocksAccessed()
 	t.FindAndPrint(8.0, true)
 
@@ -55,7 +56,7 @@ func experiment3(t *bptree.Tree) {
 func experiment4(t *bptree.Tree) {
 	fmt.Printf("Running experiment 4 %dB\n", blockSize)
 	loggername := "experiment4_" + strconv.Itoa(blockSize)
-	logger.InitializeLogger(loggername)
+	logger.InitFileLogger(loggername, log.WarnLevel)
 	t.BlckMngr.ResetBlocksAccessed()
 	t.FindAndPrintRange(7.0, 9.0, true)
 
@@ -65,7 +66,7 @@ func experiment4(t *bptree.Tree) {
 func experiment5(t *bptree.Tree) {
 	fmt.Printf("Running experiment 5 %dB\n", blockSize)
 	loggername := "experiment5_" + strconv.Itoa(blockSize)
-	logger.InitializeLogger(loggername)
+	logger.InitFileLogger(loggername, log.WarnLevel)
 	start := time.Now()
 	recPtrs, _ := t.Find(7.0, false)
 	t.PrintTree()
