@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"strconv"
 
 	"github.com/ticklepoke/CZ4031/bptree"
@@ -81,7 +82,6 @@ func delete(key float64, t *bptree.Tree) {
 func runner(n int, rows [][]string) *bptree.Tree {
 	blockSize := 100
 	t := bptree.NewTree(n, blockSize)
-	logger.InitStdoutLogger(log.DebugLevel)
 	i := 0
 
 	for _, s := range rows {
@@ -95,8 +95,18 @@ func runner(n int, rows [][]string) *bptree.Tree {
 }
 
 func main() {
-	lecExampleDel17() // working
-	// lecExampleDelFourOne() // working
-	// lecExampleDelFourTwo() // working
+	// set logging level
+	args := os.Args[1:]
+	if len(args) > 0 {
+		level, err := log.ParseLevel(args[0])
+		if err != nil {
+			log.Fatal(err)
+		}
+		logger.Logger.SetLevel(level)
+	}
+
+	lecExampleDel17()      // working
+	lecExampleDelFourOne() // working
+	lecExampleDelFourTwo() // working
 	// exampleStealFromNonLeaf()
 }
