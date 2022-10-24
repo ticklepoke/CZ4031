@@ -3,6 +3,7 @@ package bptree
 import (
 	"fmt"
 	"io/ioutil"
+	"math"
 	"os"
 	"strconv"
 
@@ -41,7 +42,7 @@ func (t *Tree) PrintTree() {
 				}
 			}
 			if verbose_output {
-				fmt.Printf("(%d)", n)
+				fmt.Printf("(%v)", n)
 			}
 			for i = 0; i < n.NumKeys; i++ {
 				if verbose_output {
@@ -161,7 +162,7 @@ func (t *Tree) pathToRoot(child *Node) int {
 
 // findMidPoint - return num keys needed during insertion and deletion
 func findMidPoint(length int) int {
-	return length / 2
+	return int(math.Ceil(float64(length) / 2))
 }
 
 // FindNumDeletions - returns the number of nodes deleted

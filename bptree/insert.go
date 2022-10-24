@@ -1,7 +1,6 @@
 package bptree
 
 import (
-	"errors"
 	"fmt"
 )
 
@@ -70,10 +69,6 @@ func insertIntoLeaf(leaf *Node, key float64, pointer *Record) {
 			leaf.TailPointers[insertionPoint] = pointer
 			return
 		} else {
-			// get last leaf node
-			// var nodes []*Record = iterLeafLL(curr.(*Record))
-			// lastRecNode := nodes[len(nodes)-1]
-			// lastRecNode.Next = pointer
 			prev := leaf.TailPointers[insertionPoint].(*Record)
 			prev.Next = pointer
 			leaf.TailPointers[insertionPoint] = pointer
@@ -91,7 +86,6 @@ func insertIntoLeaf(leaf *Node, key float64, pointer *Record) {
 	leaf.Pointers[insertionPoint] = pointer
 	leaf.TailPointers[insertionPoint] = pointer
 	leaf.NumKeys++
-	return
 }
 
 func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key float64, pointer *Record) error {
@@ -106,18 +100,9 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key float64, pointer *Re
 	}
 
 	tempKeys := make([]float64, N)
-	// if tempKeys == nil {
-	// 	return errors.New("error: Temporary keys array")
-	// }
-
 	tempPointers := make([]interface{}, N)
 	tempTailPointers := make([]interface{}, N)
-
-	// if tempPointers == nil {
-	// 	return errors.New("error: Temporary pointers array")
-	// }
-
-	var insertionIndex = findInsertionIndex(leaf, key)
+	insertionIndex := findInsertionIndex(leaf, key)
 
 	// copy the array and insert at insertion point
 	for i = 0; i < leaf.NumKeys; i++ {
@@ -136,13 +121,10 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key float64, pointer *Re
 	for pointer.Next != nil {
 		pointer = pointer.Next
 	}
-	tempTailPointers[insertionIndex] = pointer // TODO: this might be wrong
+	tempTailPointers[insertionIndex] = pointer
 
 	leaf.NumKeys = 0
-
-	split = findMidPoint(N - 1)
-
-	// could just make use of copy to do this
+	split = findMidPoint(N)
 	for i = 0; i < split; i++ {
 		leaf.Pointers[i] = tempPointers[i]
 		leaf.TailPointers[i] = tempTailPointers[i]
@@ -172,7 +154,6 @@ func (t *Tree) insertIntoLeafAfterSplitting(leaf *Node, key float64, pointer *Re
 	}
 
 	// point to the left for dup keys
-	// CHECK this might be wrong
 	newLeaf.Parent = leaf.Parent
 	newKey = newLeaf.Keys[0]
 
@@ -190,24 +171,15 @@ func insertIntoNode(n *Node, leftIndex int, key float64, right *Node) {
 	n.NumKeys++
 }
 
-// implement binsearch
+// insertion into internal node
 func (t *Tree) insertIntoNodeAfterSplitting(oldNode *Node, leftIndex int, key float64, right *Node) error {
 	var i, j, split int
 	var kPrime float64
 	var newNode, child *Node
-	var tempKeys []float64
-	var tempPointers []interface{}
 	var err error
 
-	tempPointers = make([]interface{}, N+1)
-	if tempPointers == nil {
-		return errors.New("error: unable to make temporary pointers array for splitting nodes")
-	}
-
-	tempKeys = make([]float64, N)
-	if tempKeys == nil {
-		return errors.New("error: unable to make temporary keys array for splitting nodes")
-	}
+	tempPointers := make([]interface{}, N+1)
+	tempKeys := make([]float64, N)
 
 	for i = 0; i < oldNode.NumKeys+1; i++ {
 		if j == leftIndex+1 {
@@ -225,9 +197,7 @@ func (t *Tree) insertIntoNodeAfterSplitting(oldNode *Node, leftIndex int, key fl
 		tempKeys[j] = oldNode.Keys[i]
 		j++
 	}
-
 	tempPointers[leftIndex+1] = right
-
 	tempKeys[leftIndex] = key
 
 	split = findMidPoint(N)
@@ -243,10 +213,10 @@ func (t *Tree) insertIntoNodeAfterSplitting(oldNode *Node, leftIndex int, key fl
 	}
 	oldNode.Pointers[i] = tempPointers[i]
 
+	// Kprime is the key that will be inserted into the parent
 	kPrime = tempKeys[split]
 
 	j = 0
-	// for i += 1; i < N; i++ {
 	for i++; i < N; i++ {
 		newNode.Pointers[j] = tempPointers[i]
 		newNode.Keys[j] = tempKeys[i]
@@ -259,11 +229,6 @@ func (t *Tree) insertIntoNodeAfterSplitting(oldNode *Node, leftIndex int, key fl
 	for i = 0; i <= newNode.NumKeys; i++ {
 		child, _ = newNode.Pointers[i].(*Node)
 		child.Parent = newNode
-	}
-
-	for i = 0; i <= oldNode.NumKeys; i++ {
-		child, _ = oldNode.Pointers[i].(*Node)
-		// fmt.Println(child.Keys)
 	}
 
 	// adjust parent pointer of the two nodes
@@ -281,7 +246,6 @@ func (t *Tree) insertIntoParent(left *Node, key float64, right *Node) error {
 	leftIndex = getLeftIndex(parent, left)
 
 	// if there is space, insert directly
-
 	if parent.NumKeys < N-1 {
 		insertIntoNode(parent, leftIndex, key, right)
 		return nil

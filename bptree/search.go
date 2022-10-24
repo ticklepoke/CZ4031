@@ -39,7 +39,7 @@ func (t *Tree) FindAndPrint(key float64, verbose bool) {
 	r, err := t.Find(key, verbose)
 
 	logger.Logger.Println("Printing the attribute tconst of the records that are returned")
-	// TODO: have to traverse linked list and print out
+
 	if err != nil || r == nil {
 		fmt.Printf("Record not found under key %f.\n", key)
 	} else {
@@ -116,7 +116,6 @@ func (t *Tree) findRange(keyStart, keyEnd float64, verbose bool, returnedKeys *[
 	return numFound
 }
 
-// TODO: modify to traverse and find all the same keys
 func (t *Tree) findLeaf(key float64, verbose bool) (*Node, int) {
 	i := 0
 	c := t.Root
@@ -147,7 +146,7 @@ func (t *Tree) findLeaf(key float64, verbose bool) (*Node, int) {
 	}
 
 	noOfIndexNodes++ // add one for child node
-	// TODO: modify c to factor in slice
+
 	if verbose {
 		logger.Logger.Printf("Leaf Node %d [%f]\n", noOfIndexNodes, c.Keys[:c.NumKeys])
 	}

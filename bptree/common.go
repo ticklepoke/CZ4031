@@ -29,11 +29,6 @@ type Record struct {
 	Next  *Record
 }
 
-// block manager struct
-// allocate new block
-// keep track of blocks with free space
-// delete record
-
 // Node represents a B+ tree node
 type Node struct {
 	Pointers     []interface{}
@@ -52,31 +47,16 @@ func NewTree(n, blocksize int) *Tree {
 	return &Tree{BlckMngr: &b}
 }
 
-// call block manager
-// allocate space to the record
-// func makeRecord(value []byte) (*Record, error) {
-// 	newRecord := new(Record)
-// 	if newRecord == nil {
-// 		return nil, errors.New("Error: Record creation")
-// 	} else {
-// 		newRecord.Value = value
-// 	}
-// 	return newRecord, nil
-// }
-
 func makeNode() (*Node, error) {
 	newNode := new(Node)
-	if newNode == nil {
-		return nil, errors.New("Error: Node creation")
-	}
 	newNode.Keys = make([]float64, N-1)
 	if newNode.Keys == nil {
-		return nil, errors.New("Error: New node keys array")
+		return nil, errors.New("error: New node keys array")
 	}
 	newNode.Pointers = make([]interface{}, N)
 	newNode.TailPointers = make([]interface{}, N)
 	if newNode.Keys == nil {
-		return nil, errors.New("Error: New node pointers array")
+		return nil, errors.New("error: New node pointers array")
 	}
 	newNode.IsLeaf = false
 	newNode.NumKeys = 0
