@@ -58,9 +58,12 @@ func removeEntryFromNode(n *Node, key float64, pointer interface{}) *Node {
 	}
 
 	i = 0
+	// find pointer to remove
 	for n.Pointers[i] != pointer {
 		i++
 	}
+
+	// move all pointers after selected to the left
 	for i += 1; i < num_pointers; i++ {
 		n.Pointers[i-1] = n.Pointers[i]
 	}
@@ -79,7 +82,7 @@ func removeEntryFromNode(n *Node, key float64, pointer interface{}) *Node {
 	return n
 }
 
-// adjust root if node is underflowed
+// adjust root if underflowed
 func (t *Tree) adjustRoot() {
 	var new_root *Node
 
@@ -98,8 +101,8 @@ func (t *Tree) adjustRoot() {
 	t.Root = new_root
 }
 
+// merge two nodes
 func (t *Tree) coalesceNodes(right, left *Node, neighbour_index int, k_prime float64) {
-	// combine two nodes
 	var i, j, insertion_index, n_end int
 	var tmp *Node
 
@@ -147,7 +150,6 @@ func (t *Tree) coalesceNodes(right, left *Node, neighbour_index int, k_prime flo
 
 	logger.Logger.Debugln("Finished node", left.Keys[:left.NumKeys])
 	logger.Logger.Debugf("Removing %f from parent %v\n", k_prime, right.Parent.Keys[:right.Parent.NumKeys])
-
 	t.deleteEntry(right.Parent, k_prime, right)
 }
 
@@ -278,22 +280,6 @@ func (t *Tree) adjustParentKeys(n *Node, small float64) {
 		} else {
 			break
 		}
-
-		// for i := 0; i < n.Parent.NumKeys+1; i++ {
-		// 	if n.Parent.Pointers[i] == n {
-		// 		// if node is first child (LHS), skip to next parent
-		// 		fmt.Println("here", n.Keys[:n.NumKeys], n.Parent.Keys[:n.Parent.NumKeys])
-		// 		if i != 0 {
-		// 			fmt.Println("here", small)
-		// 			n.Parent.Keys[i-1] = small
-		// 			return // if node is not first child, stop adjusting
-
-		// 		}
-
-		// 		n = n.Parent
-		// 		break
-		// 	}
-		// }
 	}
 
 	// reached root as leftmost subtree
