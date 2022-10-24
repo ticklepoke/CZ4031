@@ -12,7 +12,7 @@ import (
 
 var tree *bptree.Tree
 
-func lecExample() {
+func del17() {
 	rows := [][]string{
 		{"1", "2", "3"},
 		{"4", "2", "3"},
@@ -24,57 +24,52 @@ func lecExample() {
 		{"25", "2", "3"},
 		{"19", "2", "3"},
 		{"20", "2", "3"},
-		{"28", "2", "3"},
-		{"42", "2", "3"},
 	}
 	tree = runner(4, rows)
-}
-
-func lecExampleDel17() {
-	lecExample()
 	tree.Insert(5, "17", "2", "3")
 	tree.Insert(16, "17", "2", "3")
-	tree.PrintTree()
 	delete(17, tree)
 }
 
-func lecExampleDelFourTwo() {
-	lecExample()
-	delete(17, tree)
-	delete(19, tree)
+func delFourOne() {
+	rows := [][]string{
+		{"1", "2", "3"},
+		{"4", "2", "3"},
+		{"7", "2", "3"},
+		{"10", "2", "3"},
+		{"17", "2", "3"},
+		{"21", "2", "3"},
+		{"31", "2", "3"},
+		{"25", "2", "3"},
+		{"19", "2", "3"},
+		{"20", "2", "3"},
+	}
+	tree = runner(4, rows)
 	delete(4, tree)
 }
 
-func exampleStealFromNonLeaf() {
-	lecExample()
-	tree.Insert(43, "43", "2", "3")
-	tree.Insert(44, "44", "2", "3")
-	tree.Insert(5, "5", "2", "3")
-	tree.Insert(16, "16", "2", "3")
-	tree.Insert(45, "45", "2", "3")
-	tree.Insert(46, "46", "2", "3")
-	tree.Insert(47, "47", "2", "3")
-	tree.Insert(48, "48", "2", "3")
-	tree.Insert(49, "48", "2", "3")
-	tree.Insert(50, "48", "2", "3")
+func delFourTwo() {
+	rows := [][]string{
+		{"1", "2", "3"},
+		{"4", "2", "3"},
+		{"7", "2", "3"},
+		{"10", "2", "3"},
+		{"17", "2", "3"},
+		{"21", "2", "3"},
+		{"31", "2", "3"},
+		{"25", "2", "3"},
+		{"19", "2", "3"},
+		{"20", "2", "3"},
+	}
+	tree = runner(4, rows)
 	tree.PrintTree()
-
-	delete(47, tree)
-	delete(48, tree)
-	delete(5, tree)
-	delete(4, tree)
-	delete(10, tree)
-	delete(17, tree)
-	delete(19, tree)
-	delete(42, tree)
-}
-
-func lecExampleDelFourOne() {
-	lecExample()
+	tree.Delete(17)
+	tree.Delete(19)
 	delete(4, tree)
 }
 
 func delete(key float64, t *bptree.Tree) {
+	t.PrintTree()
 	t.Delete(key)
 	t.PrintTree()
 }
@@ -95,18 +90,28 @@ func runner(n int, rows [][]string) *bptree.Tree {
 }
 
 func main() {
-	// set logging level
 	args := os.Args[1:]
 	if len(args) > 0 {
+		// set log level
 		level, err := log.ParseLevel(args[0])
 		if err != nil {
 			log.Fatal(err)
 		}
 		logger.Logger.SetLevel(level)
-	}
 
-	lecExampleDel17()      // working
-	lecExampleDelFourOne() // working
-	lecExampleDelFourTwo() // working
-	// exampleStealFromNonLeaf()
+		// choose test case
+		example := args[1]
+		switch example {
+		case "1":
+			del17()
+		case "2":
+			delFourOne()
+		case "3":
+			delFourTwo()
+		}
+	} else {
+		// no args provided, exit
+		log.Fatal("Please provide a logging level and example number [1, 2, 3]")
+		os.Exit(1)
+	}
 }
